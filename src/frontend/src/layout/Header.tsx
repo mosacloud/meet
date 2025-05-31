@@ -10,6 +10,7 @@ import { FeedbackBanner } from '@/components/FeedbackBanner'
 import { Menu } from '@/primitives/Menu'
 import { MenuList } from '@/primitives/MenuList'
 import { LoginButton } from '@/components/LoginButton'
+import MosaAsset from '@/assets/mosa.svg'
 
 import { useLoginHint } from '@/hooks/useLoginHint'
 
@@ -156,19 +157,28 @@ export const Header = () => {
                     display: 'none',
                   })}`}
                 />
-                <HStack gap={0}>
+                <img
+                  src={MosaAsset}
+                  alt={'mosa'}
+                  className={css({
+                    width: 100, // Adjust width as needed
+                    margin: 'auto', // Center alignment
+                    display: 'block', // Center alignment
+                  })}
+                />
+                <HStack gap={0} className={css({alignSelf: 'center',})}>
                   <Logo />
                   <BetaBadge />
                 </HStack>
               </Link>
             </Stack>
           </header>
-          <nav>
-            <Stack gap={1} direction="row" align="center">
-              {isLoggedIn === false &&
-                !isHome &&
-                !isLegalTerms &&
-                !isAccessibility &&
+            <nav>
+                <Stack gap={1} direction="row" align="center">
+                    {isLoggedIn === false &&
+                        !isHome &&
+                        !isLegalTerms &&
+                        !isAccessibility &&
                 !isTermsOfService && (
                   <>
                     <LoginButton proConnectHint={false} />

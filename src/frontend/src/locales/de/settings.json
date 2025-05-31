@@ -3,6 +3,7 @@
     "currentlyLoggedAs": "Sie sind derzeit angemeldet als <0>{{user}}</0>",
     "heading": "Konto",
     "youAreNotLoggedIn": "Sie sind nicht angemeldet.",
+    "authenticate": "Anmelden bei Ihrem Konto",
     "nameLabel": "Ihr Name",
     "authentication": "Authentifizierung",
     "nameError": "Ihr Name darf nicht leer sein"
