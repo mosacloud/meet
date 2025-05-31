@@ -3,6 +3,7 @@
     "currentlyLoggedAs": "U bent momenteel ingelogd als <0>{{user}}</0>",
     "heading": "Account",
     "youAreNotLoggedIn": "U bent niet ingelogd.",
+    "authenticate": "Log in op uw account",
     "nameLabel": "Uw naam",
     "authentication": "Authenticatie",
     "nameError": "Uw naam mag niet leeg zijn"
