@@ -2,8 +2,9 @@
   "account": {
     "currentlyLoggedAs": "Du bist derzeit angemeldet als <0>{{user}}</0>",
     "heading": "Konto",
-    "youAreNotLoggedIn": "Du bist nicht angemeldet.",
-    "nameLabel": "Dein Name",
+    "youAreNotLoggedIn": "Sie sind nicht angemeldet.",
+    "authenticate": "Anmelden bei Ihrem Konto",
+    "nameLabel": "Ihr Name",
     "authentication": "Authentifizierung",
     "nameError": "Dein Name darf nicht leer sein"
   },
