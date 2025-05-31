@@ -5,7 +5,7 @@ import { styled } from '@/styled-system/jsx'
 import { navigateTo } from '@/navigation/navigateTo'
 import { Screen } from '@/layout/Screen'
 import { generateRoomId } from '@/features/rooms'
-import { useUser, UserAware } from '@/features/auth'
+import {useUser, UserAware, authUrl} from '@/features/auth'
 import { JoinMeetingDialog } from '../components/JoinMeetingDialog'
 import { ProConnectButton } from '@/components/ProConnectButton'
 import { useCreateRoom } from '@/features/rooms'
@@ -146,6 +146,7 @@ const IntroText = styled('div', {
 
 export const Home = () => {
   const { t } = useTranslation('home')
+    const { t:settings } = useTranslation('settings')
   const { isLoggedIn } = useUser()
 
   const {
@@ -211,7 +212,16 @@ export const Home = () => {
                   </RACMenu>
                 </Menu>
               ) : (
-                <ProConnectButton hint={false} />
+                  <Button
+                      variant="primary"
+                      style={{
+                          height: !isLoggedIn ? '56px' : undefined, // Temporary, Align with ProConnect Button fixed height
+                      }}
+                      onPress={() => {
+                          window.location.href = authUrl()
+                      }}>
+                      {settings('account.authenticate')}
+                  </Button>
               )}
               <DialogTrigger>
                 <Button

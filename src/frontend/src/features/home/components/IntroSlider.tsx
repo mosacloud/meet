@@ -53,7 +53,7 @@ const Dot = styled('div', {
   variants: {
     selected: {
       true: {
-        backgroundColor: '#000091',
+        backgroundColor: '#0443F2',
       },
       false: {
         backgroundColor: '#CACAFB',

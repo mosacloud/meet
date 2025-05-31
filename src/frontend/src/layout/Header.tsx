@@ -10,50 +10,10 @@ import { FeedbackBanner } from '@/components/FeedbackBanner'
 import { Menu } from '@/primitives/Menu'
 import { MenuList } from '@/primitives/MenuList'
 import { ProConnectButton } from '@/components/ProConnectButton'
+import MosaAsset from '@/assets/mosa.svg'
 
 import LogoAsset from '@/assets/logo.svg'
 import { useLoginHint } from '@/hooks/useLoginHint'
-
-const Marianne = () => {
-  return (
-    <div
-      className={css({
-        _before: {
-          content: '""',
-          display: 'block',
-          backgroundImage: 'url(/assets/marianne.svg)',
-          backgroundPosition: '0 -0.046875rem, 0 0, 0 0',
-          backgroundSize: '2.0625rem 0.84375rem, 2.0625rem 0.75rem, 0',
-          height: '0.75rem',
-          marginBottom: '0.1rem',
-          width: '2.0625rem',
-        },
-        _after: {
-          content: '""',
-          display: 'block',
-          backgroundImage: 'url(/assets/devise.svg)',
-          backgroundRepeat: 'no-repeat',
-          backgroundSize: 'contain',
-          width: '2.5rem',
-          height: '1.7857142857142858rem',
-          marginTop: '0.25rem',
-        },
-      })}
-    >
-      <p
-        className={css({
-          letterSpacing: '-.01em',
-          textTransform: 'uppercase',
-          fontWeight: '700',
-          fontFamily: 'Marianne',
-          fontSize: '0.7875rem !important',
-        })}
-      >
-        gouvernement
-      </p>
-    </div>
-  )
-}
 
 const BetaBadge = () => (
   <span
@@ -173,42 +133,50 @@ export const Header = () => {
         <HStack gap={0} justify="space-between" alignItems="center">
           <header>
             <Stack gap={2.25} direction="row" align="center">
-              <Link
-                className={css({
-                  display: 'flex',
-                  flexDirection: { base: 'column', sm: 'row' },
-                  alignItems: 'start',
-                  gap: { base: '0', sm: '2rem' },
-                  padding: { base: '0.5rem', sm: '1rem' },
-                  _hover: {
-                    backgroundColor: 'greyscale.100',
-                    borderRadius: '4px',
-                  },
-                })}
-                onClick={(event) => {
-                  if (
-                    isRoom &&
-                    !window.confirm(t('leaveRoomPrompt', { ns: 'rooms' }))
-                  ) {
-                    event.preventDefault()
-                  }
-                }}
-                to="/"
-              >
-                <Marianne />
-                <HStack gap={0}>
-                  <Logo />
-                  <BetaBadge />
-                </HStack>
-              </Link>
+                <Link
+                    className={css({
+                        display: 'flex',
+                        flexDirection: {base: 'column', sm: 'row'},
+                        alignItems: 'start',
+                        gap: {base: '0', sm: '2rem'},
+                        padding: {base: '0.5rem', sm: '1rem'},
+                        _hover: {
+                            backgroundColor: 'greyscale.100',
+                            borderRadius: '4px',
+                        },
+                    })}
+                    onClick={(event) => {
+                        if (
+                            isRoom &&
+                            !window.confirm(t('leaveRoomPrompt', {ns: 'rooms'}))
+                        ) {
+                            event.preventDefault()
+                        }
+                    }}
+                    to="/"
+                >
+                    <img
+                        src={MosaAsset}
+                        alt={'mosa'}
+                        className={css({
+                            width: 100, // Adjust width as needed
+                            margin: 'auto', // Center alignment
+                            display: 'block', // Center alignment
+                        })}
+                    />
+                    <HStack gap={0} className={css({alignSelf: 'center',})}>
+                        <Logo />
+                        <BetaBadge />
+                    </HStack>
+                </Link>
             </Stack>
           </header>
-          <nav>
-            <Stack gap={1} direction="row" align="center">
-              {isLoggedIn === false &&
-                !isHome &&
-                !isLegalTerms &&
-                !isAccessibility &&
+            <nav>
+                <Stack gap={1} direction="row" align="center">
+                    {isLoggedIn === false &&
+                        !isHome &&
+                        !isLegalTerms &&
+                        !isAccessibility &&
                 !isTermsOfService && (
                   <>
                     <ProConnectButton hint={false} />
