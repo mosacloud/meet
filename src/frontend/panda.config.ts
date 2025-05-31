@@ -146,7 +146,7 @@ const config: Config = {
           500: { value: '#6A6AF4' },
           600: { value: '#313178' },
           700: { value: '#272747' },
-          800: { value: '#000091' },
+          800: { value: '#0443F2' },
           900: { value: '#21213F' },
           950: { value: '#1B1B35' },
           action: { value: '#1212FF' },
