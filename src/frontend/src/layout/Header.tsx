@@ -11,7 +11,6 @@ import { Menu } from '@/primitives/Menu'
 import { MenuList } from '@/primitives/MenuList'
 import { LoginButton } from '@/components/LoginButton'
 import { VisualOnlyTooltip } from '@/primitives/VisualOnlyTooltip'
-import MosaAsset from '@/assets/mosa.svg'
 
 import { useLoginHint } from '@/hooks/useLoginHint'
 import { logout } from '@/features/auth/utils/logout'
@@ -140,15 +139,6 @@ export const Header = () => {
                   className={`Header-beforeLogo ${css({
                     display: 'none',
                   })}`}
-                />
-                <img
-                  src={MosaAsset}
-                  alt={'mosa'}
-                  className={css({
-                    width: 100, // Adjust width as needed
-                    margin: 'auto', // Center alignment
-                    display: 'block', // Center alignment
-                  })}
                 />
                 <HStack gap={0} className={css({alignSelf: 'center',})}>
                   <Logo />
