@@ -186,7 +186,7 @@ export const Home = () => {
 
   return (
     <UserAware>
-      <Screen>
+      <Screen footer={false}>
         <Columns>
           <LeftColumn>
             <Heading>{t('heading')}</Heading>
