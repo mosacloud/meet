@@ -7,7 +7,6 @@ import { Screen } from '@/layout/Screen'
 import { generateRoomId } from '@/features/rooms'
 import {useUser, UserAware, authUrl} from '@/features/auth'
 import { JoinMeetingDialog } from '../components/JoinMeetingDialog'
-import { ProConnectButton } from '@/components/ProConnectButton'
 import { useCreateRoom } from '@/features/rooms'
 import { RiAddLine, RiLink } from '@remixicon/react'
 import { LaterMeetingDialog } from '@/features/home/components/LaterMeetingDialog'
@@ -158,7 +157,7 @@ export const Home = () => {
 
   return (
     <UserAware>
-      <Screen>
+      <Screen footer={false}>
         <Columns>
           <LeftColumn>
             <Heading>{t('heading')}</Heading>

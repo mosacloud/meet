@@ -162,7 +162,6 @@ const SLIDES: Slide[] = [
   {
     key: 'slide3',
     img: thirdSlide,
-    isAvailableInBeta: true,
   },
 ]
 

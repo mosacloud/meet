@@ -10,7 +10,6 @@ import { FeedbackBanner } from '@/components/FeedbackBanner'
 import { Menu } from '@/primitives/Menu'
 import { MenuList } from '@/primitives/MenuList'
 import { ProConnectButton } from '@/components/ProConnectButton'
-import MosaAsset from '@/assets/mosa.svg'
 
 import LogoAsset from '@/assets/logo.svg'
 import { useLoginHint } from '@/hooks/useLoginHint'
@@ -155,15 +154,6 @@ export const Header = () => {
                     }}
                     to="/"
                 >
-                    <img
-                        src={MosaAsset}
-                        alt={'mosa'}
-                        className={css({
-                            width: 100, // Adjust width as needed
-                            margin: 'auto', // Center alignment
-                            display: 'block', // Center alignment
-                        })}
-                    />
                     <HStack gap={0} className={css({alignSelf: 'center',})}>
                         <Logo />
                         <BetaBadge />
