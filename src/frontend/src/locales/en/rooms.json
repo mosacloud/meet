@@ -141,6 +141,7 @@
     "activateCamera": "Your camera is disabled. Choose an option to enable it.",
     "notAvailable": "Video effects will be available soon on your browser. We're working on it! In the meantime, you can use Google Chrome for best performance or Firefox :(",
     "heading": "Blur",
+    "clear": "Disable effect",
     "blur": {
       "title": "Background blur",
       "light": "Light blur",
@@ -192,8 +193,8 @@
     "disclaimer": "The messages are visible to participants only at the time they are sent. All messages are deleted at the end of the call."
   },
   "moreTools": {
-    "body": "Access more tools in Visio to enhance your meetings,",
-    "moreLink": "learn more",
+    "body": "Access more tools to enhance your meetings.",
+    "moreLink": "Learn more",
     "tools": {
       "transcript": {
         "title": "Transcription",
@@ -313,7 +314,7 @@
     }
   },
   "openFeedback": {
-    "question": "What can we do to improve Visio?",
+    "question": "What can we do to improve ourselves?",
     "placeholder": "Describe your bugs or share your suggestions…",
     "submit": "Submit",
     "skip": "Skip"

@@ -141,6 +141,7 @@
     "activateCamera": "Uw camera is uitgeschakeld. Kies een optie om deze in te schakelen.",
     "notAvailable": "Video-effecten zijn binnenkort beschikbaar in uw browser. We werken eraan! In de tussentijd kunt u Google Chrome gebruiken voor de beste prestaties of Firefox :(",
     "heading": "Vervaging",
+    "clear": "Effect uitschakelen",
     "blur": {
       "title": "Achtergrondvervaging",
       "light": "Lichte vervaging",
@@ -192,8 +193,8 @@
     "disclaimer": "De berichten zijn alleen voor de deelnemers zichtbaar op het moment dat ze worden verzonden. Alle berichten worden verwijderd aan het einde van het gesprek."
   },
   "moreTools": {
-    "body": "Toegang tot meer tools in Visio om je vergaderingen te verbeteren,",
-    "moreLink": "lees meer",
+    "body": "Je krijgt toegang tot meer tools om je vergaderingen te verbeteren.",
+    "moreLink": "Lees meer",
     "tools": {
       "transcript": {
         "title": "Transcriptie",
@@ -313,7 +314,7 @@
     }
   },
   "openFeedback": {
-    "question": "Wat kunnen we doen om Visio te verbeteren?",
+    "question": "Wat kunnen we doen om ons te verbeteren?",
     "placeholder": "Beschrijf uw problemen of deel uw suggesties ...",
     "submit": "Indienen",
     "skip": "Overslaan"

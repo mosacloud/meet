@@ -141,6 +141,7 @@
     "activateCamera": "Ihre Kamera ist deaktiviert. Wählen Sie eine Option, um sie zu aktivieren.",
     "notAvailable": "Videoeffekte werden bald in Ihrem Browser verfügbar sein. Wir arbeiten daran! In der Zwischenzeit können Sie Google Chrome für die beste Leistung oder Firefox verwenden :(",
     "heading": "Unschärfe",
+    "clear": "Effekt deaktivieren",
     "blur": {
       "title": "Hintergrundunschärfe",
       "light": "Leichte Unschärfe",
@@ -192,8 +193,8 @@
     "disclaimer": "Die Nachrichten sind nur für Teilnehmer zum Zeitpunkt des Sendens sichtbar. Alle Nachrichten werden am Ende des Anrufs gelöscht."
   },
   "moreTools": {
-    "body": "Greifen Sie auf weitere Tools in Visio zu, um Ihre Meetings zu verbessern,",
-    "moreLink": "mehr erfahren",
+    "body": "Greifen Sie auf weitere Tools zu, um Ihre Meetings zu verbessern.",
+    "moreLink": "Mehr erfahren",
     "tools": {
       "transcript": {
         "title": "Transkription",
@@ -313,7 +314,7 @@
     }
   },
   "openFeedback": {
-    "question": "Was können wir tun, um Visio zu verbessern?",
+    "question": "Was können wir tun, um uns zu verbessern?",
     "placeholder": "Beschreibe deine Fehler oder teile deine Vorschläge…",
     "submit": "Absenden",
     "skip": "Überspringen"

@@ -10,7 +10,16 @@
   "audio": {
     "microphone": {
       "heading": "Mikrofon",
-      "label": "Wählen Sie Ihre Audioeingabe"
+      "label": "Wählen Sie Ihre Audioeingabe",
+      "disabled": "Mikrofon deaktiviert"
+    },
+    "noiseReduction": {
+      "label": "Rauschunterdrückung",
+      "heading": "Rauschunterdrückung",
+      "ariaLabel": {
+        "enable": "Rauschunterdrückung aktivieren",
+        "disable": "Rauschunterdrückung deaktivieren"
+      }
     },
     "speakers": {
       "heading": "Lautsprecher",

@@ -9,9 +9,8 @@ import { useMatchesRoute } from '@/navigation/useMatchesRoute'
 import { FeedbackBanner } from '@/components/FeedbackBanner'
 import { Menu } from '@/primitives/Menu'
 import { MenuList } from '@/primitives/MenuList'
-import { ProConnectButton } from '@/components/ProConnectButton'
+import { LoginButton } from '@/components/LoginButton'
 
-import LogoAsset from '@/assets/logo.svg'
 import { useLoginHint } from '@/hooks/useLoginHint'
 
 const BetaBadge = () => (
@@ -37,19 +36,16 @@ const BetaBadge = () => (
   </span>
 )
 
-const Logo = () => {
-  const { t } = useTranslation()
-  return (
-    <img
-      src={LogoAsset}
-      alt={t('app')}
-      className={css({
-        maxHeight: { base: '30px', sm: '40px' },
-        marginTop: { base: '10px', sm: '5px' },
-      })}
-    />
-  )
-}
+const Logo = () => (
+  <img
+    src="/assets/logo-mosa-meet.svg"
+    alt={`${import.meta.env.VITE_APP_TITLE}`}
+    className={`Header-logo ${css({
+      maxHeight: { base: '30px', sm: '40px' },
+      marginTop: { base: '10px', sm: '5px' },
+    })}`}
+  />
+)
 
 const LoginHint = () => {
   const { t } = useTranslation()
@@ -132,33 +128,39 @@ export const Header = () => {
         <HStack gap={0} justify="space-between" alignItems="center">
           <header>
             <Stack gap={2.25} direction="row" align="center">
-                <Link
-                    className={css({
-                        display: 'flex',
-                        flexDirection: {base: 'column', sm: 'row'},
-                        alignItems: 'start',
-                        gap: {base: '0', sm: '2rem'},
-                        padding: {base: '0.5rem', sm: '1rem'},
-                        _hover: {
-                            backgroundColor: 'greyscale.100',
-                            borderRadius: '4px',
-                        },
-                    })}
-                    onClick={(event) => {
-                        if (
-                            isRoom &&
-                            !window.confirm(t('leaveRoomPrompt', {ns: 'rooms'}))
-                        ) {
-                            event.preventDefault()
-                        }
-                    }}
-                    to="/"
-                >
-                    <HStack gap={0} className={css({alignSelf: 'center',})}>
-                        <Logo />
-                        <BetaBadge />
-                    </HStack>
-                </Link>
+              <Link
+                className={css({
+                  display: 'flex',
+                  flexDirection: { base: 'column', sm: 'row' },
+                  alignItems: 'start',
+                  gap: { base: '0', sm: '2rem' },
+                  padding: { base: '0.5rem', sm: '1rem' },
+                  _hover: {
+                    backgroundColor: 'greyscale.100',
+                    borderRadius: '4px',
+                  },
+                })}
+                onClick={(event) => {
+                  if (
+                    isRoom &&
+                    !window.confirm(t('leaveRoomPrompt', { ns: 'rooms' }))
+                  ) {
+                    event.preventDefault()
+                  }
+                }}
+                to="/"
+              >
+                {/* this is there only as a hook for custom CSS users who might want to show something before the app logo */}
+                <div
+                  className={`Header-beforeLogo ${css({
+                    display: 'none',
+                  })}`}
+                />
+                <HStack gap={0} className={css({alignSelf: 'center',})}>
+                  <Logo />
+                  <BetaBadge />
+                </HStack>
+              </Link>
             </Stack>
           </header>
             <nav>
@@ -169,7 +171,7 @@ export const Header = () => {
                         !isAccessibility &&
                 !isTermsOfService && (
                   <>
-                    <ProConnectButton hint={false} />
+                    <LoginButton proConnectHint={false} />
                     <LoginHint />
                   </>
                 )}
