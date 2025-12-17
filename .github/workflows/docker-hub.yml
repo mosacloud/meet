@@ -14,8 +14,6 @@ on:
 
 env:
   DOCKER_USER: 1001:127
-  DOCKER_CONTAINER_REGISTRY_HOSTNAME: docker.io
-  DOCKER_CONTAINER_REGISTRY_NAMESPACE: lasuite
 
 jobs:
   build-and-push-backend:
@@ -23,13 +21,24 @@ jobs:
     steps:
       -
         name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
+      -
+        name: Get version from pyproject.toml
+        id: version
+        run: |
+          VERSION=$(grep -m1 'version' src/backend/pyproject.toml | cut -d'"' -f2)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
       -
         name: Docker meta
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: '${{ env.DOCKER_CONTAINER_REGISTRY_NAMESPACE }}/meet-backend'
+          images: mosacloud/meet-backend
+          tags: |
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=raw,value=${{ steps.version.outputs.version }},enable={{is_default_branch}}
+            type=ref,event=pr
+            type=semver,pattern={{version}}
       -
         name: Login to DockerHub
         if: github.event_name != 'pull_request'
@@ -42,7 +51,7 @@ jobs:
         uses: numerique-gouv/action-trivy-cache@main
         with:
           docker-build-args: '--target backend-production -f Dockerfile'
-          docker-image-name: '${{ env.DOCKER_CONTAINER_REGISTRY_HOSTNAME }}/${{ env.DOCKER_CONTAINER_REGISTRY_NAMESPACE }}/meet-backend:${{ github.sha }}'
+          docker-image-name: 'docker.io/mosacloud/meet-backend:${{ github.sha }}'
       -
         name: Build and push
         uses: docker/build-push-action@v6
@@ -54,18 +63,29 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
-  build-and-push-frontend-generic:
+  build-and-push-frontend:
     runs-on: ubuntu-latest
     steps:
       -
         name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
+      -
+        name: Get version from package.json
+        id: version
+        run: |
+          VERSION=$(jq -r .version src/frontend/package.json)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
       -
         name: Docker meta
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: '${{ env.DOCKER_CONTAINER_REGISTRY_NAMESPACE }}/meet-frontend'
+          images: mosacloud/meet-frontend
+          tags: |
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=raw,value=${{ steps.version.outputs.version }},enable={{is_default_branch}}
+            type=ref,event=pr
+            type=semver,pattern={{version}}
       -
         name: Login to DockerHub
         if: github.event_name != 'pull_request'
@@ -78,7 +98,7 @@ jobs:
         uses: numerique-gouv/action-trivy-cache@main
         with:
           docker-build-args: '-f src/frontend/Dockerfile --target frontend-production'
-          docker-image-name: '${{ env.DOCKER_CONTAINER_REGISTRY_HOSTNAME }}/${{ env.DOCKER_CONTAINER_REGISTRY_NAMESPACE }}/meet-frontend:${{ github.sha }}'
+          docker-image-name: 'docker.io/mosacloud/meet-frontend:${{ github.sha }}'
       -
         name: Build and push
         uses: docker/build-push-action@v6
@@ -91,55 +111,29 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
-  build-and-push-frontend-dinum:
-    runs-on: ubuntu-latest
-    steps:
-      -
-        name: Checkout repository
-        uses: actions/checkout@v4
-      -
-        name: Docker meta
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: '${{ env.DOCKER_CONTAINER_REGISTRY_NAMESPACE }}/meet-frontend-dinum'
-      -
-        name: Login to DockerHub
-        if: github.event_name != 'pull_request'
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_HUB_USER }}
-          password: ${{ secrets.DOCKER_HUB_PASSWORD }}
-      -
-        name: Run trivy scan
-        uses: numerique-gouv/action-trivy-cache@main
-        with:
-          docker-build-args: '-f docker/dinum-frontend/Dockerfile --target frontend-production'
-          docker-image-name: '${{ env.DOCKER_CONTAINER_REGISTRY_HOSTNAME }}/${{ env.DOCKER_CONTAINER_REGISTRY_NAMESPACE }}/meet-frontend-dinum:${{ github.sha }}'
-      -
-        name: Build and push
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          file: ./docker/dinum-frontend/Dockerfile
-          target: frontend-production
-          build-args: DOCKER_USER=${{ env.DOCKER_USER }}:-1000
-          push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-
   build-and-push-summary:
     runs-on: ubuntu-latest
     steps:
       -
         name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
+      -
+        name: Get version from pyproject.toml
+        id: version
+        run: |
+          VERSION=$(grep -m1 'version' src/summary/pyproject.toml | cut -d'"' -f2)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
       -
         name: Docker meta
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: '${{ env.DOCKER_CONTAINER_REGISTRY_NAMESPACE }}/meet-summary'
+          images: mosacloud/meet-summary
+          tags: |
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=raw,value=${{ steps.version.outputs.version }},enable={{is_default_branch}}
+            type=ref,event=pr
+            type=semver,pattern={{version}}
       -
         name: Login to DockerHub
         if: github.event_name != 'pull_request'
@@ -172,13 +166,24 @@ jobs:
     steps:
       -
         name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
+      -
+        name: Get version from pyproject.toml
+        id: version
+        run: |
+          VERSION=$(grep -m1 'version' src/agents/pyproject.toml | cut -d'"' -f2)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
       -
         name: Docker meta
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: lasuite/meet-agents
+          images: mosacloud/meet-agents
+          tags: |
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=raw,value=${{ steps.version.outputs.version }},enable={{is_default_branch}}
+            type=ref,event=pr
+            type=semver,pattern={{version}}
       -
         name: Login to DockerHub
         if: github.event_name != 'pull_request'
@@ -205,20 +210,3 @@ jobs:
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-
-  notify-argocd:
-    needs:
-      - build-and-push-frontend-generic
-      - build-and-push-frontend-dinum
-      - build-and-push-backend
-      - build-and-push-summary
-      - build-and-push-agents
-    runs-on: ubuntu-latest
-    if: github.event_name != 'pull_request'
-    steps:
-      - uses: numerique-gouv/action-argocd-webhook-notification@main
-        id: notify
-        with:
-          deployment_repo_path: "${{ secrets.DEPLOYMENT_REPO_URL }}"
-          argocd_webhook_secret: "${{ secrets.ARGOCD_PREPROD_WEBHOOK_SECRET }}"
-          argocd_url: "${{ vars.ARGOCD_PREPROD_WEBHOOK_URL }}"
