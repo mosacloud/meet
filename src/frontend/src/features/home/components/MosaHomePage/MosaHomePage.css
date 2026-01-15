@@ -1,0 +1,598 @@
+/* Theme colors - Meet uses green */
+:root {
+  --mosa-app-color: #00b574;
+  --mosa-app-gradient-end: #059669;
+}
+
+/* Animations */
+@keyframes mosa-float {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(20px, -20px) scale(1.05);
+  }
+  66% {
+    transform: translate(-15px, 15px) scale(0.95);
+  }
+}
+
+@keyframes mosa-fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.mosa-home {
+  --font-heading: 'Poppins', sans-serif;
+  --font-body: 'Open Sans', sans-serif;
+  --app-color: var(--mosa-app-color);
+  --app-gradient-end: var(--mosa-app-gradient-end);
+  min-height: 100vh;
+  font-family: var(--font-body);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+@media (max-width: 900px) {
+  .mosa-home {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Brand Panel (left side) */
+.mosa-home__brand-panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 3rem;
+  overflow: hidden;
+}
+
+@media (max-width: 900px) {
+  .mosa-home__brand-panel {
+    display: none;
+  }
+}
+
+.mosa-home__brand-bg {
+  position: absolute;
+  inset: 0;
+}
+
+.mosa-home__gradient-base {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--app-color) 0%, var(--app-gradient-end) 100%);
+}
+
+.mosa-home__grid-overlay {
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 40px 40px;
+  mask-image: radial-gradient(ellipse at center, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 70%);
+  -webkit-mask-image: radial-gradient(ellipse at center, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 70%);
+}
+
+.mosa-home__orb {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  filter: blur(40px);
+  animation: mosa-float 20s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mosa-home__orb {
+    animation: none;
+  }
+}
+
+.mosa-home__orb--1 {
+  width: 300px;
+  height: 300px;
+  top: -10%;
+  right: -10%;
+}
+
+.mosa-home__orb--2 {
+  width: 200px;
+  height: 200px;
+  bottom: 20%;
+  left: -5%;
+  animation-delay: -7s;
+}
+
+.mosa-home__orb--3 {
+  width: 150px;
+  height: 150px;
+  bottom: -5%;
+  right: 20%;
+  animation-delay: -14s;
+}
+
+.mosa-home__brand-content {
+  position: relative;
+  text-align: center;
+  color: white;
+  z-index: 1;
+  animation: mosa-fadeIn 0.6s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mosa-home__brand-content {
+    animation: none;
+  }
+}
+
+.mosa-home__app-icon {
+  width: 88px;
+  height: 88px;
+  margin: 0 auto 0.75rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mosa-home__app-icon img {
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+}
+
+.mosa-home__brand-title {
+  font-family: var(--font-heading);
+  font-size: 2.75rem;
+  font-weight: 700;
+  margin: 0 0 0.75rem;
+  letter-spacing: -0.02em;
+}
+
+.mosa-home__brand-tagline {
+  font-size: 1.125rem;
+  opacity: 0.9;
+  margin: 0;
+  max-width: 300px;
+  line-height: 1.6;
+}
+
+.mosa-home__brand-footer {
+  position: absolute;
+  bottom: 2.5rem;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.mosa-home__brand-footer span {
+  font-size: 0.8125rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.mosa-home__eu-flag {
+  width: 32px;
+  height: 24px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.mosa-home__eu-flag img {
+  width: 12px;
+  height: 12px;
+  filter: brightness(0) invert(1);
+  opacity: 0.8;
+}
+
+/* Form panel (right side) */
+.mosa-home__form-panel {
+  background: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+}
+
+@media (max-width: 900px) {
+  .mosa-home__form-panel {
+    min-height: 100vh;
+    justify-content: flex-start;
+    overflow: hidden;
+    background: linear-gradient(180deg, color-mix(in srgb, var(--app-color) 3%, white) 0%, white 50%);
+  }
+}
+
+.mosa-home__lang-wrapper {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  z-index: 10;
+}
+
+@media (max-width: 900px) {
+  .mosa-home__lang-wrapper {
+    top: 1rem;
+    right: 1rem;
+  }
+}
+
+.mosa-home__lang-container {
+  position: relative;
+}
+
+.mosa-home__lang-button {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: #4b5563;
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-family: var(--font-body);
+}
+
+.mosa-home__lang-button:hover {
+  background: #e5e7eb;
+  color: #374151;
+}
+
+.mosa-home__lang-button svg {
+  flex-shrink: 0;
+}
+
+.mosa-home__lang-dropdown {
+  position: absolute;
+  top: calc(100% + 0.25rem);
+  right: 0;
+  min-width: 100%;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  z-index: 10;
+}
+
+.mosa-home__lang-option {
+  display: block;
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: #4b5563;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s ease;
+  font-family: var(--font-body);
+}
+
+.mosa-home__lang-option:hover {
+  background: #f3f4f6;
+}
+
+.mosa-home__lang-option--selected {
+  color: var(--app-color);
+  background: color-mix(in srgb, var(--app-color) 8%, transparent);
+}
+
+.mosa-home__mobile-accents {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .mosa-home__mobile-accents {
+    display: block;
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image: linear-gradient(color-mix(in srgb, var(--app-color) 8%, transparent) 1px, transparent 1px),
+      linear-gradient(90deg, color-mix(in srgb, var(--app-color) 8%, transparent) 1px, transparent 1px);
+    background-size: 40px 40px;
+    mask-image: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0) 70%);
+    -webkit-mask-image: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0) 70%);
+  }
+}
+
+.mosa-home__mobile-header {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .mosa-home__mobile-header {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    position: absolute;
+    top: 1.25rem;
+    left: 1rem;
+    z-index: 10;
+  }
+}
+
+.mosa-home__mobile-logo {
+  width: 28px;
+  height: 28px;
+  background: linear-gradient(135deg, var(--app-color) 0%, var(--app-gradient-end) 100%);
+  mask-image: url('/assets/mosa.svg');
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  mask-position: center;
+  -webkit-mask-image: url('/assets/mosa.svg');
+  -webkit-mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+}
+
+.mosa-home__mobile-brand {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--app-color) 0%, var(--app-gradient-end) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.mosa-home__mobile-footer {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .mosa-home__mobile-footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 2rem 1.5rem;
+    margin-top: auto;
+  }
+
+  .mosa-home__mobile-footer span {
+    font-size: 0.8125rem;
+    color: #9ca3af;
+  }
+}
+
+.mosa-home__mobile-eu-flag {
+  width: 32px;
+  height: 24px;
+  background: #e5e7eb;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #9ca3af;
+}
+
+.mosa-home__form-container {
+  display: flex;
+  flex-direction: column;
+  padding: 2rem 3rem;
+  max-width: 440px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+@media (max-width: 900px) {
+  .mosa-home__form-container {
+    flex: 1;
+    justify-content: center;
+    padding: 2rem 1.5rem;
+  }
+}
+
+.mosa-home__form-header {
+  margin-bottom: 2.5rem;
+  text-align: center;
+}
+
+.mosa-home__form-header h2 {
+  font-family: var(--font-heading);
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 0.5rem;
+}
+
+.mosa-home__form-header p {
+  font-size: 0.9375rem;
+  color: #6b7280;
+  margin: 0;
+}
+
+.mosa-home__product-highlight {
+  color: var(--app-color);
+}
+
+.mosa-home__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.mosa-home__primary-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 1rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: white;
+  background: linear-gradient(135deg, var(--app-color) 0%, var(--app-gradient-end) 100%);
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--app-color) 30%, transparent);
+  font-family: var(--font-body);
+  text-decoration: none;
+}
+
+.mosa-home__primary-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px color-mix(in srgb, var(--app-color) 40%, transparent);
+}
+
+.mosa-home__primary-button svg {
+  flex-shrink: 0;
+}
+
+/* Create meeting dropdown */
+.mosa-home__create-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.mosa-home__create-dropdown {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  z-index: 10;
+}
+
+.mosa-home__create-option {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.875rem 1rem;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: #374151;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s ease;
+  font-family: var(--font-body);
+}
+
+.mosa-home__create-option:hover {
+  background: #f3f4f6;
+}
+
+.mosa-home__create-option svg {
+  color: var(--app-color);
+  flex-shrink: 0;
+}
+
+/* Divider */
+.mosa-home__divider {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 0.5rem 0;
+}
+
+.mosa-home__divider::before,
+.mosa-home__divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: #e5e7eb;
+}
+
+.mosa-home__divider span {
+  font-size: 0.8125rem;
+  color: #9ca3af;
+}
+
+/* Join meeting */
+.mosa-home__join-meeting {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.mosa-home__join-input {
+  flex: 1;
+  padding: 0.875rem 1rem;
+  font-size: 0.9375rem;
+  color: #111827;
+  background: white;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  outline: none;
+  transition: all 0.2s ease;
+  font-family: var(--font-body);
+}
+
+.mosa-home__join-input::placeholder {
+  color: #9ca3af;
+}
+
+.mosa-home__join-input:focus {
+  border-color: var(--app-color);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--app-color) 15%, transparent);
+}
+
+.mosa-home__join-button {
+  padding: 0.875rem 1.5rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--app-color);
+  background: white;
+  border: 2px solid var(--app-color);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: var(--font-body);
+}
+
+.mosa-home__join-button:hover:not(:disabled) {
+  background: var(--app-color);
+  color: white;
+}
+
+.mosa-home__join-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.mosa-home__signup-prompt {
+  text-align: center;
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin: 1rem 0 0;
+}
+
+.mosa-home__signup-prompt a {
+  color: var(--app-color);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.mosa-home__signup-prompt a:hover {
+  text-decoration: underline;
+}
