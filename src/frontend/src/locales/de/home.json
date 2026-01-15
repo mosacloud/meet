@@ -1,4 +1,22 @@
 {
+  "mosa": {
+    "pageTitle": "Mosa Meet",
+    "tagline": "Ihr Open-Source-Arbeitsbereich",
+    "welcomeTo": "Willkommen bei",
+    "productDescription": "Videokonferenzen",
+    "signInButton": "Mit Ihrem Konto anmelden",
+    "createMeetingButton": "Meeting erstellen",
+    "noAccount": "Noch kein Konto?",
+    "contactUs": "Kontaktieren Sie uns",
+    "builtInEu": "In der EU entwickelt",
+    "orJoinMeeting": "oder Meeting beitreten",
+    "enterMeetingCode": "Meeting-Code eingeben",
+    "join": "Beitreten",
+    "createMenu": {
+      "instantOption": "Sofort-Meeting starten",
+      "laterOption": "Meeting für später erstellen"
+    }
+  },
   "createMeeting": "Meeting erstellen",
   "heading": "Einfache und sichere Videokonferenzen",
   "intro": "Kommunizieren und arbeiten Sie mühelos, ohne Ihre digitale Souveränität zu gefährden",
