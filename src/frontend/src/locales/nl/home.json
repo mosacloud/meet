@@ -1,4 +1,22 @@
 {
+  "mosa": {
+    "pageTitle": "Mosa Meet",
+    "tagline": "Je open source werkruimte",
+    "welcomeTo": "Welkom bij",
+    "productDescription": "Videoconferenties",
+    "signInButton": "Inloggen met je account",
+    "createMeetingButton": "Maak een vergadering",
+    "noAccount": "Heb je nog geen account?",
+    "contactUs": "Neem contact op",
+    "builtInEu": "Gebouwd in de EU",
+    "orJoinMeeting": "of neem deel aan een vergadering",
+    "enterMeetingCode": "Voer vergadercode in",
+    "join": "Deelnemen",
+    "createMenu": {
+      "instantOption": "Start direct een vergadering",
+      "laterOption": "Maak een vergadering voor later"
+    }
+  },
   "createMeeting": "Maak een vergadering",
   "heading": "Eenvoudige en veilige videoconferenties",
   "intro": "Communiceer en werk gemakkelijk, zonder uw soevereiniteit in gevaar te brengen",
