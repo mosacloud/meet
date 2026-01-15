@@ -1,4 +1,22 @@
 {
+  "mosa": {
+    "pageTitle": "Mosa Meet",
+    "tagline": "Votre espace de travail open source",
+    "welcomeTo": "Bienvenue sur",
+    "productDescription": "Visioconférence",
+    "signInButton": "Se connecter avec votre compte",
+    "createMeetingButton": "Créer une réunion",
+    "noAccount": "Vous n'avez pas de compte ?",
+    "contactUs": "Contactez-nous",
+    "builtInEu": "Conçu dans l'UE",
+    "orJoinMeeting": "ou rejoindre une réunion",
+    "enterMeetingCode": "Entrez le code de réunion",
+    "join": "Rejoindre",
+    "createMenu": {
+      "instantOption": "Démarrer une réunion instantanée",
+      "laterOption": "Créer une réunion pour plus tard"
+    }
+  },
   "createMeeting": "Créer une réunion",
   "heading": "Visioconférences simples et sécurisées",
   "intro": "Communiquez et travaillez en toute simplicité, sans compromis sur votre souveraineté",
