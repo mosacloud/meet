@@ -21,6 +21,9 @@ const BaseRoom = ({ children }: { children: ReactNode }) => {
 }
 
 export const Room = () => {
+  // TODO: If users report being redirected to home when visiting room URLs directly,
+  // the silent login flow may be losing the returnTo parameter. Quick fix:
+  // const { isLoggedIn } = useUser({ fetchUserOptions: { attemptSilent: false } })
   const { isLoggedIn } = useUser()
   const [hasSubmittedEntry, setHasSubmittedEntry] = useState(false)
 
