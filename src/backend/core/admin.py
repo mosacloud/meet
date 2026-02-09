@@ -115,6 +115,10 @@ class RoomAdmin(admin.ModelAdmin):
     list_filter = ["access_level", "created_at"]
     readonly_fields = ["id", "created_at", "updated_at"]
 
+    def get_queryset(self, request):
+        """Optimize queries by prefetching related access and user data to avoid N+1 queries."""
+        return super().get_queryset(request).prefetch_related("accesses__user")
+
     def get_owner(self, obj):
         """Return the owner of the room for display in the admin list."""
 
@@ -138,6 +142,7 @@ class RecordingAccessInline(admin.TabularInline):
 
     model = models.RecordingAccess
     extra = 0
+    autocomplete_fields = ["user"]
 
 
 @admin.action(description=_("Resend notification to external service"))
@@ -207,8 +212,18 @@ class RecordingAdmin(admin.ModelAdmin):
         "created_at",
         "worker_id",
     )
-    list_filter = ["status", "room", "created_at"]
-    readonly_fields = ["id", "created_at", "updated_at"]
+    list_filter = ["created_at"]
+    list_select_related = ("room",)
+    readonly_fields = (
+        "id",
+        "created_at",
+        "options",
+        "mode",
+        "room",
+        "status",
+        "updated_at",
+        "worker_id",
+    )
     actions = [resend_notification]
 
     def get_queryset(self, request):

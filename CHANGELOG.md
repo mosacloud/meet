@@ -10,7 +10,12 @@ and this project adheres to
 
 ### Changed
 
+- ♿️(frontend) improve spinner reduced‑motion fallback #931
 - ♿️(frontend) fix form labels and autocomplete wiring #932
+- 🥅(summary) catch file-related exceptions when handling recording #944
+- 📝(frontend) update legal terms #956
+- ⚡️(backend) enhance django admin's loading performance #954
+- 🌐(frontend) add missing DE translation for accessibility settings
 
 ## [1.5.0] - 2026-01-28
 
