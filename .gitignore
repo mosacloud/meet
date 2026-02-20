@@ -82,3 +82,5 @@ docker/livekit/out
 
 # LiveKit CA configuration
 docker/livekit/rootCA.pem
+.claude/
+CLAUDE.md
