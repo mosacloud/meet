@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { useUser } from '@/features/auth'
+import { useSnapshot } from 'valtio'
+import { useUser } from '@/features/auth/api/useUser'
 import { authUrl } from '@/features/auth/utils/authUrl'
 import { navigateTo } from '@/navigation/navigateTo'
 import { generateRoomId, useCreateRoom, isRoomValid } from '@/features/rooms'
-import { usePersistentUserChoices } from '@/features/rooms/livekit/hooks/usePersistentUserChoices'
+import { userChoicesStore } from '@/stores/userChoices'
 import { LaterMeetingDialog } from '@/features/home/components/LaterMeetingDialog'
 import { ApiRoom } from '@/features/rooms/api/ApiRoom'
 
@@ -90,9 +91,7 @@ export const MosaHomePage = () => {
   const createRef = useRef<HTMLDivElement>(null)
 
   const { mutateAsync: createRoom } = useCreateRoom()
-  const {
-    userChoices: { username },
-  } = usePersistentUserChoices()
+  const { username } = useSnapshot(userChoicesStore)
 
   useEffect(() => {
     document.title = t('mosa.pageTitle')

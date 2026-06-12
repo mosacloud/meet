@@ -85,3 +85,6 @@ docker/livekit/out
 docker/livekit/rootCA.pem
 .claude/
 CLAUDE.md
+
+# Frontend rollup-plugin-visualizer
+/src/frontend/rollup-plugin-visualizer/*

@@ -1,4 +1,4 @@
-import { UserAware } from '@/features/auth'
+import { UserAware } from '@/features/auth/components/UserAware'
 import { Screen } from '@/layout/Screen'
 import { MosaHomePage } from '../components/MosaHomePage'
 
@@ -11,3 +11,5 @@ export const Home = () => {
     </UserAware>
   )
 }
+
+export default Home

@@ -13,7 +13,8 @@ from django.core.exceptions import SuspiciousOperation
 from django.utils.translation import gettext_lazy as _
 
 from django_pydantic_field.rest_framework import SchemaField
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_serializer
+from pydantic import ValidationError as PydanticValidationError
 from rest_framework import serializers
 from rest_framework.exceptions import PermissionDenied
 from timezone_field.rest_framework import TimeZoneSerializerField
@@ -131,6 +132,16 @@ class RoomSerializer(serializers.ModelSerializer):
         fields = ["id", "name", "slug", "configuration", "access_level", "pin_code"]
         read_only_fields = ["id", "slug", "pin_code"]
 
+    def validate_configuration(self, value):
+        """Validate room configuration against the RoomConfiguration schema."""
+        if value is None or value == {}:
+            return value
+        try:
+            RoomConfiguration.model_validate(value)
+        except PydanticValidationError as e:
+            raise serializers.ValidationError(e.errors()) from e
+        return value
+
     def to_representation(self, instance):
         """
         Add users only for administrator users.
@@ -155,11 +166,6 @@ class RoomSerializer(serializers.ModelSerializer):
             )
             output["accesses"] = access_serializer.data
 
-        configuration = output["configuration"]
-
-        if not is_admin_or_owner:
-            del output["configuration"]
-
         should_access_room = (
             (
                 instance.access_level == models.RoomAccessLevel.TRUSTED
@@ -176,7 +182,7 @@ class RoomSerializer(serializers.ModelSerializer):
                 room_id=room_id,
                 user=request.user,
                 username=username,
-                configuration=configuration,
+                configuration=output["configuration"],
                 is_admin_or_owner=is_admin_or_owner,
             )
         else:
@@ -232,11 +238,14 @@ class RecordingOptions(BaseModel):
             When `None`, falls back to the application default.
         original_mode: The original recording mode before any override.
             Must be one of the valid RecordingModeChoices values when provided.
+        collect_metadata: Whether to collect additional metadata during recording.
+            When `None`, no metadata are collected.
 
     """
 
     language: str | None = None
     transcribe: bool | None = None
+    collect_metadata: bool | None = None
     original_mode: Literal["screen_recording", "transcript"] | None = None
 
     model_config = {"extra": "forbid"}
@@ -303,6 +312,21 @@ class MuteParticipantSerializer(BaseParticipantsManagementSerializer):
     )
 
 
+TrackSource = Literal["camera", "microphone", "screen_share", "screen_share_audio"]
+
+
+class RoomConfiguration(BaseModel):
+    """Validate room configuration structure.
+
+    Unknown fields are rejected.
+    """
+
+    can_publish_sources: list[TrackSource] | None = None
+    everyone_can_mute: bool | None = None
+
+    model_config = {"extra": "forbid"}
+
+
 class ParticipantPermission(BaseModel):
     """Mirror the LiveKit ParticipantPermission protobuf.
 
@@ -313,9 +337,7 @@ class ParticipantPermission(BaseModel):
     can_subscribe: bool | None = None
     can_publish: bool | None = None
     can_publish_data: bool | None = None
-    can_publish_sources: list[int] = Field(
-        default_factory=list
-    )  # TrackSource enum values
+    can_publish_sources: list[TrackSource] = Field(default_factory=list)
     hidden: bool | None = None
     recorder: bool | None = None
     can_update_metadata: bool | None = None
@@ -323,6 +345,10 @@ class ParticipantPermission(BaseModel):
     can_subscribe_metrics: bool | None = None
 
     model_config = {"extra": "forbid"}
+
+    @field_serializer("can_publish_sources")
+    def _serialize_sources(self, sources: list[str]) -> list[str]:
+        return [s.upper() for s in sources]
 
 
 class UpdateParticipantSerializer(BaseParticipantsManagementSerializer):
@@ -365,14 +391,6 @@ class UpdateParticipantSerializer(BaseParticipantsManagementSerializer):
             raise SuspiciousOperation(
                 f"Setting the following participant permissions is not allowed: "
                 f"{', '.join(suspicious_fields)}."
-            )
-        if permission.can_subscribe_metrics is not None:
-            raise serializers.ValidationError(
-                {
-                    "permission": {
-                        "can_subscribe_metrics": "This permission is not implemented."
-                    }
-                }
             )
 
         return permission
@@ -438,7 +456,7 @@ class ListFileSerializer(serializers.ModelSerializer):
 
     def get_url(self, obj):
         """Return the URL of the file."""
-        if obj.is_pending_upload:
+        if not obj.is_ready:
             return None
 
         return f"{settings.MEDIA_BASE_URL}{settings.MEDIA_URL}{quote(obj.file_key)}"
@@ -533,3 +551,15 @@ class CreateFileSerializer(ListFileSerializer):
 
     def update(self, instance, validated_data):
         raise NotImplementedError("Update method can not be used.")
+
+
+class RaiseHandSerializer(BaseValidationOnlySerializer):
+    """Serializer for raising or lowering a participant's hand in a room."""
+
+    raised = serializers.BooleanField()
+
+
+class RenameParticipantSerializer(BaseValidationOnlySerializer):
+    """Serializer for renaming a participant in a room."""
+
+    name = serializers.CharField(min_length=1, max_length=255, allow_blank=False)

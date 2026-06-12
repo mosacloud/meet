@@ -7,10 +7,6 @@ environments:
     values:
       - version: 0.0.1
       - env.d/dev-dinum/values.secrets.yaml
-  dev:
-    values:
-      - version: 0.0.1
-      - env.d/dev/values.secrets.yaml
 
 ---
 repositories:
@@ -41,6 +37,7 @@ releases:
   missingFileHandler: Warn
   chart: ./meet
   values:
+  - env.d/common.yaml.gotmpl
   - env.d/{{ .Environment.Name }}/values.meet.yaml.gotmpl
   - env.d/{{ .Environment.Name }}/values.secrets.yaml
   secrets:

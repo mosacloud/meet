@@ -9,7 +9,7 @@ import {
   DisconnectReason,
   MediaDeviceFailure,
   Room,
-  RoomOptions,
+  type RoomOptions,
   VideoPresets,
 } from 'livekit-client'
 import { keys } from '@/api/queryKeys'
@@ -18,7 +18,7 @@ import { Screen } from '@/layout/Screen'
 import { QueryAware } from '@/components/QueryAware'
 import { ErrorScreen } from '@/components/ErrorScreen'
 import { fetchRoom } from '../api/fetchRoom'
-import { ApiRoom } from '../api/ApiRoom'
+import type { ApiRoom } from '../api/ApiRoom'
 import { useCreateRoom } from '../api/createRoom'
 import { InviteDialog } from './InviteDialog'
 import { VideoConference } from '../livekit/prefabs/VideoConference'
@@ -31,6 +31,8 @@ import { useConfig } from '@/api/useConfig'
 import { isFireFox } from '@/utils/livekit'
 import { useIsMobile } from '@/utils/useIsMobile'
 import { navigateTo } from '@/navigation/navigateTo'
+import { connectionObserverStore } from '@/stores/connectionObserver'
+import { PictureInPictureConference } from '@/features/pip/components/PictureInPictureConference'
 
 export const Conference = ({
   roomId,
@@ -70,7 +72,6 @@ export const Conference = ({
     isError: isFetchError,
     data,
   } = useQuery({
-    /* eslint-disable @tanstack/query/exhaustive-deps */
     queryKey: fetchKey,
     staleTime: 6 * 60 * 60 * 1000, // By default, LiveKit access tokens expire 6 hours after generation
     initialData: initialRoomData,
@@ -228,9 +229,34 @@ export const Conference = ({
             posthog.captureException(e)
           }}
           onDisconnected={(e) => {
+            const metadata = {
+              room_id: roomId,
+              pc_publisher: connectionObserverStore.publisher && {
+                ...connectionObserverStore.publisher,
+              },
+              pc_subscriber: connectionObserverStore.subscriber && {
+                ...connectionObserverStore.subscriber,
+              },
+              pc_publisher_changes_count:
+                connectionObserverStore.publisherChangesCount,
+              pc_subscriber_changes_count:
+                connectionObserverStore.subscriberChangesCount,
+            }
+
+            connectionObserverStore.publisher = null
+            connectionObserverStore.publisherChangesCount = 0
+            connectionObserverStore.subscriber = null
+            connectionObserverStore.subscriberChangesCount = 0
+
             switch (e) {
               case DisconnectReason.CLIENT_INITIATED:
-                navigateTo('feedback')
+                navigateTo(
+                  'feedback',
+                  {},
+                  {
+                    state: { ...metadata },
+                  }
+                )
                 return
               case DisconnectReason.DUPLICATE_IDENTITY:
               case DisconnectReason.PARTICIPANT_REMOVED:
@@ -238,7 +264,10 @@ export const Conference = ({
                   'feedback',
                   {},
                   {
-                    state: { reason: e },
+                    state: {
+                      reason: e,
+                      ...metadata,
+                    },
                   }
                 )
                 return
@@ -262,6 +291,7 @@ export const Conference = ({
             {...mediaDeviceError}
             onClose={() => setMediaDeviceError({ error: null, kind: null })}
           />
+          <PictureInPictureConference />
         </LiveKitRoom>
       </Screen>
     </QueryAware>
