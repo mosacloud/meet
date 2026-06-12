@@ -99,7 +99,10 @@ export const MosaHomePage = () => {
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (createRef.current && !createRef.current.contains(event.target as Node)) {
+      if (
+        createRef.current &&
+        !createRef.current.contains(event.target as Node)
+      ) {
         setIsCreateOpen(false)
       }
     }
@@ -158,9 +161,7 @@ export const MosaHomePage = () => {
               <img src="/assets/mosa.svg" alt="mosa.cloud" />
             </div>
             <h1 className="mosa-home__brand-title">mosa.cloud</h1>
-            <p className="mosa-home__brand-tagline">
-              {t('mosa.tagline')}
-            </p>
+            <p className="mosa-home__brand-tagline">{t('mosa.tagline')}</p>
           </div>
 
           <div className="mosa-home__brand-footer">
@@ -179,7 +180,10 @@ export const MosaHomePage = () => {
           <div className="mosa-home__mobile-accents" />
 
           <div className="mosa-home__mobile-header">
-            <div className="mosa-home__mobile-logo" aria-label="mosa.cloud logo" />
+            <div
+              className="mosa-home__mobile-logo"
+              aria-label="mosa.cloud logo"
+            />
             <span className="mosa-home__mobile-brand">mosa.cloud</span>
           </div>
 
