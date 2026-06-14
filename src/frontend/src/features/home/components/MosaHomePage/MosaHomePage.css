@@ -71,17 +71,30 @@
 .mosa-home__gradient-base {
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, var(--app-color) 0%, var(--app-gradient-end) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--app-color) 0%,
+    var(--app-gradient-end) 100%
+  );
 }
 
 .mosa-home__grid-overlay {
   position: absolute;
   inset: 0;
-  background-image: linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
   background-size: 40px 40px;
-  mask-image: radial-gradient(ellipse at center, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 70%);
-  -webkit-mask-image: radial-gradient(ellipse at center, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 70%);
+  mask-image: radial-gradient(
+    ellipse at center,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 0) 70%
+  );
+  -webkit-mask-image: radial-gradient(
+    ellipse at center,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 0) 70%
+  );
 }
 
 .mosa-home__orb {
@@ -215,7 +228,11 @@
     min-height: 100vh;
     justify-content: flex-start;
     overflow: hidden;
-    background: linear-gradient(180deg, color-mix(in srgb, var(--app-color) 3%, white) 0%, white 50%);
+    background: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--app-color) 3%, white) 0%,
+      white 50%
+    );
   }
 }
 
@@ -309,11 +326,27 @@
     position: absolute;
     inset: 0;
     pointer-events: none;
-    background-image: linear-gradient(color-mix(in srgb, var(--app-color) 8%, transparent) 1px, transparent 1px),
-      linear-gradient(90deg, color-mix(in srgb, var(--app-color) 8%, transparent) 1px, transparent 1px);
+    background-image:
+      linear-gradient(
+        color-mix(in srgb, var(--app-color) 8%, transparent) 1px,
+        transparent 1px
+      ),
+      linear-gradient(
+        90deg,
+        color-mix(in srgb, var(--app-color) 8%, transparent) 1px,
+        transparent 1px
+      );
     background-size: 40px 40px;
-    mask-image: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0) 70%);
-    -webkit-mask-image: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0) 70%);
+    mask-image: radial-gradient(
+      ellipse at center,
+      rgba(0, 0, 0, 0.6) 0%,
+      rgba(0, 0, 0, 0) 70%
+    );
+    -webkit-mask-image: radial-gradient(
+      ellipse at center,
+      rgba(0, 0, 0, 0.6) 0%,
+      rgba(0, 0, 0, 0) 70%
+    );
   }
 }
 
@@ -336,7 +369,11 @@
 .mosa-home__mobile-logo {
   width: 28px;
   height: 28px;
-  background: linear-gradient(135deg, var(--app-color) 0%, var(--app-gradient-end) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--app-color) 0%,
+    var(--app-gradient-end) 100%
+  );
   mask-image: url('/assets/mosa.svg');
   mask-size: contain;
   mask-repeat: no-repeat;
@@ -351,7 +388,11 @@
   font-family: var(--font-heading);
   font-size: 1.25rem;
   font-weight: 700;
-  background: linear-gradient(135deg, var(--app-color) 0%, var(--app-gradient-end) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--app-color) 0%,
+    var(--app-gradient-end) 100%
+  );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -444,7 +485,11 @@
   font-size: 1rem;
   font-weight: 600;
   color: white;
-  background: linear-gradient(135deg, var(--app-color) 0%, var(--app-gradient-end) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--app-color) 0%,
+    var(--app-gradient-end) 100%
+  );
   border: none;
   border-radius: 12px;
   cursor: pointer;
