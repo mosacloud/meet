@@ -145,7 +145,7 @@ export const Header = () => {
                     display: 'none',
                   })}`}
                 />
-                <HStack gap={0} className={css({alignSelf: 'center',})}>
+                <HStack gap={0} className={css({ alignSelf: 'center' })}>
                   <Logo />
                 </HStack>
               </Link>
