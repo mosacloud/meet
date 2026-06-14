@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { useUser } from '@/features/auth'
+import { useSnapshot } from 'valtio'
+import { useUser } from '@/features/auth/api/useUser'
 import { authUrl } from '@/features/auth/utils/authUrl'
 import { navigateTo } from '@/navigation/navigateTo'
 import { generateRoomId, useCreateRoom, isRoomValid } from '@/features/rooms'
-import { usePersistentUserChoices } from '@/features/rooms/livekit/hooks/usePersistentUserChoices'
+import { userChoicesStore } from '@/stores/userChoices'
 import { LaterMeetingDialog } from '@/features/home/components/LaterMeetingDialog'
 import { ApiRoom } from '@/features/rooms/api/ApiRoom'
 
@@ -90,9 +91,7 @@ export const MosaHomePage = () => {
   const createRef = useRef<HTMLDivElement>(null)
 
   const { mutateAsync: createRoom } = useCreateRoom()
-  const {
-    userChoices: { username },
-  } = usePersistentUserChoices()
+  const { username } = useSnapshot(userChoicesStore)
 
   useEffect(() => {
     document.title = t('mosa.pageTitle')
@@ -100,7 +99,10 @@ export const MosaHomePage = () => {
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (createRef.current && !createRef.current.contains(event.target as Node)) {
+      if (
+        createRef.current &&
+        !createRef.current.contains(event.target as Node)
+      ) {
         setIsCreateOpen(false)
       }
     }
@@ -159,9 +161,7 @@ export const MosaHomePage = () => {
               <img src="/assets/mosa.svg" alt="mosa.cloud" />
             </div>
             <h1 className="mosa-home__brand-title">mosa.cloud</h1>
-            <p className="mosa-home__brand-tagline">
-              {t('mosa.tagline')}
-            </p>
+            <p className="mosa-home__brand-tagline">{t('mosa.tagline')}</p>
           </div>
 
           <div className="mosa-home__brand-footer">
@@ -180,7 +180,10 @@ export const MosaHomePage = () => {
           <div className="mosa-home__mobile-accents" />
 
           <div className="mosa-home__mobile-header">
-            <div className="mosa-home__mobile-logo" aria-label="mosa.cloud logo" />
+            <div
+              className="mosa-home__mobile-logo"
+              aria-label="mosa.cloud logo"
+            />
             <span className="mosa-home__mobile-brand">mosa.cloud</span>
           </div>
 

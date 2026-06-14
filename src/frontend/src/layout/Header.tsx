@@ -140,18 +140,18 @@ export const Header = () => {
                     display: 'none',
                   })}`}
                 />
-                <HStack gap={0} className={css({alignSelf: 'center',})}>
+                <HStack gap={0} className={css({ alignSelf: 'center' })}>
                   <Logo />
                 </HStack>
               </Link>
             </Stack>
           </header>
-            <nav>
-                <Stack gap={1} direction="row" align="center">
-                    {isLoggedIn === false &&
-                        !isHome &&
-                        !isLegalTerms &&
-                        !isAccessibility &&
+          <nav>
+            <Stack gap={1} direction="row" align="center">
+              {isLoggedIn === false &&
+                !isHome &&
+                !isLegalTerms &&
+                !isAccessibility &&
                 !isTermsOfService && (
                   <>
                     <LoginButton proConnectHint={false} />
