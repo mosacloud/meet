@@ -148,20 +148,20 @@ export const MosaHomePage = () => {
 
       <div className="mosa-home">
         <div className="mosa-home__brand-panel">
-          <div className="mosa-home__brand-bg">
-            <div className="mosa-home__gradient-base" />
-            <div className="mosa-home__grid-overlay" />
-            <div className="mosa-home__orb mosa-home__orb--1" />
-            <div className="mosa-home__orb mosa-home__orb--2" />
-            <div className="mosa-home__orb mosa-home__orb--3" />
-          </div>
+          <div className="mosa-home__gradient-base" />
+          <div className="mosa-home__grid-overlay" />
+          <span className="mosa-home__dot mosa-home__dot--1" />
+          <span className="mosa-home__dot mosa-home__dot--2" />
+          <span className="mosa-home__dot mosa-home__dot--3" />
+          <span className="mosa-home__dot mosa-home__dot--4" />
+          <span className="mosa-home__dot mosa-home__dot--5" />
 
           <div className="mosa-home__brand-content">
-            <div className="mosa-home__app-icon">
-              <img src="/assets/mosa.svg" alt="mosa.cloud" />
-            </div>
-            <h1 className="mosa-home__brand-title">mosa.cloud</h1>
-            <p className="mosa-home__brand-tagline">{t('mosa.tagline')}</p>
+            <img
+              className="mosa-home__brand-wordmark"
+              src="/logos/mosa-cloud-logo-white.svg"
+              alt="mosa.cloud"
+            />
           </div>
 
           <div className="mosa-home__brand-footer">
@@ -173,28 +173,30 @@ export const MosaHomePage = () => {
         </div>
 
         <div className="mosa-home__form-panel">
+          <div className="mosa-home__mobile-accents" />
+
           <div className="mosa-home__lang-wrapper">
             <LanguageSelector />
           </div>
 
-          <div className="mosa-home__mobile-accents" />
-
           <div className="mosa-home__mobile-header">
-            <div
+            <img
               className="mosa-home__mobile-logo"
-              aria-label="mosa.cloud logo"
+              src="/logos/mosa-cloud-logo.svg"
+              alt="mosa.cloud"
             />
-            <span className="mosa-home__mobile-brand">mosa.cloud</span>
           </div>
 
           <div className="mosa-home__form-container">
             <div className="mosa-home__form-header">
+              <p className="mosa-home__eyebrow">{t('mosa.productDescription')}</p>
               <h2>
                 {t('mosa.welcomeTo')}{' '}
                 <span className="mosa-home__product-highlight">Meet</span>
               </h2>
-              <p>{t('mosa.productDescription')}</p>
             </div>
+
+            <div className="mosa-home__divider" />
 
             <div className="mosa-home__actions">
               {isLoggedIn ? (
@@ -241,10 +243,6 @@ export const MosaHomePage = () => {
                   <ArrowRight />
                 </a>
               )}
-
-              <div className="mosa-home__divider">
-                <span>{t('mosa.orJoinMeeting')}</span>
-              </div>
 
               <div className="mosa-home__join-meeting">
                 <input
