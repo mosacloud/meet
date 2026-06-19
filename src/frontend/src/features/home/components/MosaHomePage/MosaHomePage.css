@@ -161,9 +161,11 @@
 }
 
 .mosa-home__brand-wordmark {
+  display: block;
   width: 32rem;
   max-width: 80%;
   height: auto;
+  margin: 0 auto;
 }
 
 .mosa-home__brand-footer {
