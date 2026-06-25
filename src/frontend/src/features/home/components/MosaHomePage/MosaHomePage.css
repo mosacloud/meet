@@ -241,6 +241,9 @@
   top: 1.5rem;
   right: 1.5rem;
   z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 @media (max-width: 900px) {
@@ -640,4 +643,196 @@
 
 .mosa-home__signup-prompt a:hover {
   text-decoration: underline;
+}
+
+/* Profile dropdown — mirrors @gouvfr-lasuite/ui-kit UserMenu */
+
+.um-trigger {
+  position: relative;
+}
+
+.um-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.um-btn:hover {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+/* Avatar */
+.um-avatar {
+  border-radius: 50%;
+  color: white;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  line-height: 1;
+  font-family: var(--font-body);
+  letter-spacing: 0.01em;
+}
+
+.um-avatar--sm {
+  width: 24px;
+  height: 24px;
+  font-size: 0.625rem;
+}
+
+.um-avatar--md {
+  width: 36px;
+  height: 36px;
+  font-size: 0.875rem;
+}
+
+/* Popover */
+.um-popover {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  right: 0;
+  min-width: 280px;
+  max-width: 360px;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+  overflow: visible;
+  z-index: 20;
+}
+
+/* Identity section */
+.um-identity {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+}
+
+.um-identity__info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  min-width: 0;
+}
+
+.um-identity__name {
+  margin: 0;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: #111827;
+  font-family: var(--font-body);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.um-identity__email {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: #6b7280;
+  font-family: var(--font-body);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Divider */
+.um-divider {
+  height: 1px;
+  background: #e5e7eb;
+  margin: 0;
+}
+
+/* Action row (logout) */
+.um-action-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.625rem 0.75rem;
+  font-size: 0.9375rem;
+  font-weight: 400;
+  color: #374151;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s ease;
+  font-family: var(--font-body);
+}
+
+.um-action-row:hover {
+  background: #f9fafb;
+}
+
+/* Language section */
+.um-lang-section {
+  position: relative;
+  padding: 0.375rem 0.75rem;
+}
+
+.um-lang-trigger-wrapper {
+  display: inline-flex;
+}
+
+.um-lang-trigger {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.9375rem;
+  font-weight: 400;
+  color: #374151;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  font-family: var(--font-body);
+}
+
+.um-lang-trigger:hover {
+  background: #f3f4f6;
+}
+
+.um-lang-dropdown {
+  position: absolute;
+  top: calc(100% + 0.25rem);
+  left: 0;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  z-index: 21;
+  min-width: 80px;
+}
+
+.um-lang-option {
+  display: block;
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.9375rem;
+  font-weight: 400;
+  color: #374151;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s ease;
+  font-family: var(--font-body);
+}
+
+.um-lang-option:hover {
+  background: #f3f4f6;
 }

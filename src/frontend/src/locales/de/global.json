@@ -21,6 +21,9 @@
     "proconnectLink": "Was ist ProConnect?"
   },
   "logout": "Abmelden",
+  "profile": {
+    "openMenu": "Menü öffnen für {{name}}"
+  },
   "notFound": {
     "heading": "Überprüfe deinen Meeting-Code",
     "body": "Stelle sicher, dass du den richtigen Meeting-Code in der URL eingegeben haben. Beispiel:"
