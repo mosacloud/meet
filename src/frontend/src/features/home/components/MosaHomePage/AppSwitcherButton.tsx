@@ -228,7 +228,9 @@ export const AppSwitcherButton = () => {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          padding: '4px',
+          width: '40px',
+          height: '40px',
+          padding: '0',
           background: 'transparent',
           border: 'none',
           borderRadius: '8px',
@@ -242,16 +244,16 @@ export const AppSwitcherButton = () => {
           aria-hidden
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(3, 4px)',
-            gridTemplateRows: 'repeat(3, 4px)',
-            gap: '4px',
+            gridTemplateColumns: 'repeat(3, 3px)',
+            gridTemplateRows: 'repeat(3, 3px)',
+            gap: '2px',
             border: `1px solid ${BORDER}`,
-            borderRadius: '8px',
-            padding: '8px 10px',
+            borderRadius: '6px',
+            padding: '6px',
           }}
         >
           {[...APP_ORDER, APP_ORDER[0], APP_ORDER[1]].map((id, i) => (
-            <span key={i} style={{ width: 4, height: 4, borderRadius: '50%', background: APP_META[id].color }} />
+            <span key={i} style={{ width: 3, height: 3, borderRadius: '50%', background: APP_META[id].color }} />
           ))}
         </span>
       </button>
