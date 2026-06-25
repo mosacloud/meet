@@ -9,6 +9,7 @@ import { generateRoomId, useCreateRoom, isRoomValid } from '@/features/rooms'
 import { userChoicesStore } from '@/stores/userChoices'
 import { LaterMeetingDialog } from '@/features/home/components/LaterMeetingDialog'
 import { ApiRoom } from '@/features/rooms/api/ApiRoom'
+import { AppSwitcherButton } from './AppSwitcherButton'
 
 import {
   ArrowRight,
@@ -175,6 +176,7 @@ export const MosaHomePage = () => {
         <div className="mosa-home__form-panel">
           <div className="mosa-home__lang-wrapper">
             <LanguageSelector />
+            {isLoggedIn && <AppSwitcherButton />}
           </div>
 
           <div className="mosa-home__mobile-accents" />
