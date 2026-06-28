@@ -1,4 +1,4 @@
-import { type ReactNode } from 'react'
+import { type ReactNode, useEffect } from 'react'
 import { css } from '@/styled-system/css'
 import { Header } from './Header'
 import { layoutStore } from '@/stores/layout'
@@ -16,6 +16,14 @@ export type Layout = 'fullpage' | 'centered'
  * In a specific page, use the `Screen` component and change its props to change global page layout.
  */
 export const Layout = ({ children }: { children: ReactNode }) => {
+  useEffect(() => {
+    const handlePageShow = (e: PageTransitionEvent) => {
+      if (e.persisted) window.location.reload()
+    }
+    window.addEventListener('pageshow', handlePageShow)
+    return () => window.removeEventListener('pageshow', handlePageShow)
+  }, [])
+
   const layoutSnap = useSnapshot(layoutStore)
   const showHeader = layoutSnap.showHeader
   const showFooter = layoutSnap.showFooter
