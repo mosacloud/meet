@@ -21,6 +21,9 @@
     "proconnectLink": "Was ist ProConnect?"
   },
   "logout": "Abmelden",
+  "profile": {
+    "openMenu": "Menü öffnen für {{name}}"
+  },
   "notFound": {
     "heading": "Überprüfe deinen Meeting-Code",
     "body": "Stelle sicher, dass du den richtigen Meeting-Code in der URL eingegeben haben. Beispiel:"
@@ -54,6 +57,25 @@
     }
   },
   "skipLink": "Zum Hauptinhalt springen",
+  "YOU'RE IN": "DU BIST IN",
+  "JUMP TO": "WECHSELN ZU",
+  "Switch app": "App wechseln",
+  "Meet": "Meet",
+  "Epicentre": "Epicentre",
+  "Docs": "Docs",
+  "Drive": "Drive",
+  "Mail": "Mail",
+  "Calendar": "Calendar",
+  "Chat": "Chat",
+  "Commander": "Commander",
+  "Home": "Startseite",
+  "Documents": "Dokumente",
+  "Files": "Dateien",
+  "Video calls": "Videoanrufe",
+  "Email": "E-Mail",
+  "Schedule": "Kalender",
+  "Messaging": "Nachrichten",
+  "Admin": "Administration",
   "clipboardContent": {
     "url": "Um an der Videokonferenz teilzunehmen, folge diesem Link: {{roomUrl}}",
     "numberAndPin": "Um per Telefon teilzunehmen, wähle {{phoneNumber}} und gib diesen Code ein: {{pinCode}}"

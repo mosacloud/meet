@@ -21,6 +21,9 @@
     "proconnectLink": "Qu'est-ce que ProConnect ?"
   },
   "logout": "Se déconnecter",
+  "profile": {
+    "openMenu": "Ouvrir le menu de {{name}}"
+  },
   "notFound": {
     "heading": "Vérifier votre code de réunion",
     "body": "Vérifiez que vous avez saisi le code de réunion correct dans l'URL. Exemple :"
@@ -54,6 +57,25 @@
     }
   },
   "skipLink": "Aller au contenu principal",
+  "YOU'RE IN": "VOUS ÊTES DANS",
+  "JUMP TO": "ALLER VERS",
+  "Switch app": "Changer d'application",
+  "Meet": "Meet",
+  "Epicentre": "Epicentre",
+  "Docs": "Docs",
+  "Drive": "Drive",
+  "Mail": "Mail",
+  "Calendar": "Calendar",
+  "Chat": "Chat",
+  "Commander": "Commander",
+  "Home": "Accueil",
+  "Documents": "Documents",
+  "Files": "Fichiers",
+  "Video calls": "Appels vidéo",
+  "Email": "Email",
+  "Schedule": "Planning",
+  "Messaging": "Messagerie",
+  "Admin": "Administration",
   "clipboardContent": {
     "url": "Pour participer à la visioconférence, cliquez sur ce lien : {{roomUrl}}",
     "numberAndPin": "Pour participer par téléphone, composez le {{phoneNumber}} et saisissez ce code : {{pinCode}}"

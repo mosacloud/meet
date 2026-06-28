@@ -419,6 +419,15 @@ class Base(Configuration):
         ),
     }
 
+    # App switcher — URLs for other Mosa apps (Meet itself excluded)
+    APP_URL_EPICENTRE = values.Value(None, environ_name="APP_URL_EPICENTRE", environ_prefix=None)
+    APP_URL_DOCS      = values.Value(None, environ_name="APP_URL_DOCS",      environ_prefix=None)
+    APP_URL_DRIVE     = values.Value(None, environ_name="APP_URL_DRIVE",     environ_prefix=None)
+    APP_URL_MAIL      = values.Value(None, environ_name="APP_URL_MAIL",      environ_prefix=None)
+    APP_URL_CALENDAR  = values.Value(None, environ_name="APP_URL_CALENDAR",  environ_prefix=None)
+    APP_URL_CHAT      = values.Value(None, environ_name="APP_URL_CHAT",      environ_prefix=None)
+    APP_URL_COMMANDER = values.Value(None, environ_name="APP_URL_COMMANDER", environ_prefix=None)
+
     # Mail
     EMAIL_BACKEND = values.Value("django.core.mail.backends.smtp.EmailBackend")
     EMAIL_HOST = values.Value(None)
