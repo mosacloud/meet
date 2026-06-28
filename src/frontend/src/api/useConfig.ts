@@ -67,6 +67,7 @@ export interface ApiConfig {
   max_participants_for_sound: number
   auto_mute_on_join_threshold: number
   authenticated_users_can_edit_display_name: boolean
+  APP_URLS?: Record<string, string>
 }
 
 const fetchConfig = (): Promise<ApiConfig> => {
