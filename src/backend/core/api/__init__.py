@@ -70,4 +70,20 @@ def get_frontend_configuration(request):
         },
     }
     frontend_configuration.update(settings.FRONTEND_CONFIGURATION)
+
+    app_urls = {}
+    for app_id, setting_name in [
+        ("epicentre", "APP_URL_EPICENTRE"),
+        ("docs",      "APP_URL_DOCS"),
+        ("drive",     "APP_URL_DRIVE"),
+        ("mail",      "APP_URL_MAIL"),
+        ("calendar",  "APP_URL_CALENDAR"),
+        ("chat",      "APP_URL_CHAT"),
+        ("commander", "APP_URL_COMMANDER"),
+    ]:
+        url = getattr(settings, setting_name, None)
+        if url:
+            app_urls[app_id] = url
+    frontend_configuration["APP_URLS"] = app_urls
+
     return Response(frontend_configuration)
