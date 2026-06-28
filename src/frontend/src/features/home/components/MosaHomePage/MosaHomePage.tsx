@@ -10,6 +10,7 @@ import { userChoicesStore } from '@/stores/userChoices'
 import { LaterMeetingDialog } from '@/features/home/components/LaterMeetingDialog'
 import { ApiRoom } from '@/features/rooms/api/ApiRoom'
 import { AppSwitcherButton } from './AppSwitcherButton'
+import { ProfileDropdown } from './ProfileDropdown'
 
 import {
   ArrowRight,
@@ -179,6 +180,7 @@ export const MosaHomePage = () => {
           <div className="mosa-home__lang-wrapper">
             <LanguageSelector />
             {isLoggedIn && <AppSwitcherButton />}
+            {isLoggedIn && <ProfileDropdown />}
           </div>
 
           <div className="mosa-home__mobile-header">

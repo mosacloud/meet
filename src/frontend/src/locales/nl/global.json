@@ -21,6 +21,9 @@
     "proconnectLink": "Wat is ProConnect?"
   },
   "logout": "Uitloggen",
+  "profile": {
+    "openMenu": "Menu openen voor {{name}}"
+  },
   "notFound": {
     "heading": "Pagina niet gevonden"
   },
