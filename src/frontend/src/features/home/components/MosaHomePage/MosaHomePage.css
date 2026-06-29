@@ -257,6 +257,9 @@
   top: 1.5rem;
   right: 1.5rem;
   z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .mosa-home__lang-container {
