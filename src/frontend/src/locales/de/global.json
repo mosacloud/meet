@@ -57,25 +57,21 @@
     }
   },
   "skipLink": "Zum Hauptinhalt springen",
-  "YOU'RE IN": "DU BIST IN",
-  "JUMP TO": "WECHSELN ZU",
-  "Switch app": "App wechseln",
-  "Meet": "Meet",
-  "Epicentre": "Epicentre",
-  "Docs": "Docs",
-  "Drive": "Drive",
-  "Mail": "Mail",
-  "Calendar": "Calendar",
-  "Chat": "Chat",
-  "Commander": "Commander",
-  "Home": "Startseite",
-  "Documents": "Dokumente",
-  "Files": "Dateien",
-  "Video calls": "Videoanrufe",
-  "Email": "E-Mail",
-  "Schedule": "Kalender",
-  "Messaging": "Nachrichten",
-  "Admin": "Administration",
+  "app_switcher": {
+    "you_are_in": "DU BIST IN",
+    "jump_to": "WECHSELN ZU",
+    "switch_app": "App wechseln",
+    "apps": {
+      "epicentre": { "label": "Epicentre", "subtitle": "Startseite" },
+      "docs": { "label": "Docs", "subtitle": "Dokumente" },
+      "drive": { "label": "Drive", "subtitle": "Dateien" },
+      "meet": { "label": "Meet", "subtitle": "Videoanrufe" },
+      "mail": { "label": "Mail", "subtitle": "E-Mail" },
+      "calendar": { "label": "Calendar", "subtitle": "Kalender" },
+      "chat": { "label": "Chat", "subtitle": "Nachrichten" },
+      "commander": { "label": "Commander", "subtitle": "Administration" }
+    }
+  },
   "clipboardContent": {
     "url": "Um an der Videokonferenz teilzunehmen, folge diesem Link: {{roomUrl}}",
     "numberAndPin": "Um per Telefon teilzunehmen, wähle {{phoneNumber}} und gib diesen Code ein: {{pinCode}}"

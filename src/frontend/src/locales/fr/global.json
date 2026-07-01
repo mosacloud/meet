@@ -57,25 +57,21 @@
     }
   },
   "skipLink": "Aller au contenu principal",
-  "YOU'RE IN": "VOUS ÊTES DANS",
-  "JUMP TO": "ALLER VERS",
-  "Switch app": "Changer d'application",
-  "Meet": "Meet",
-  "Epicentre": "Epicentre",
-  "Docs": "Docs",
-  "Drive": "Drive",
-  "Mail": "Mail",
-  "Calendar": "Calendar",
-  "Chat": "Chat",
-  "Commander": "Commander",
-  "Home": "Accueil",
-  "Documents": "Documents",
-  "Files": "Fichiers",
-  "Video calls": "Appels vidéo",
-  "Email": "Email",
-  "Schedule": "Planning",
-  "Messaging": "Messagerie",
-  "Admin": "Administration",
+  "app_switcher": {
+    "you_are_in": "VOUS ÊTES DANS",
+    "jump_to": "ALLER VERS",
+    "switch_app": "Changer d'application",
+    "apps": {
+      "epicentre": { "label": "Epicentre", "subtitle": "Accueil" },
+      "docs": { "label": "Docs", "subtitle": "Documents" },
+      "drive": { "label": "Drive", "subtitle": "Fichiers" },
+      "meet": { "label": "Meet", "subtitle": "Appels vidéo" },
+      "mail": { "label": "Mail", "subtitle": "Email" },
+      "calendar": { "label": "Calendar", "subtitle": "Planning" },
+      "chat": { "label": "Chat", "subtitle": "Messagerie" },
+      "commander": { "label": "Commander", "subtitle": "Administration" }
+    }
+  },
   "clipboardContent": {
     "url": "Pour participer à la visioconférence, cliquez sur ce lien : {{roomUrl}}",
     "numberAndPin": "Pour participer par téléphone, composez le {{phoneNumber}} et saisissez ce code : {{pinCode}}"

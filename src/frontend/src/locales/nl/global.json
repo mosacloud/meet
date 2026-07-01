@@ -56,25 +56,21 @@
     }
   },
   "skipLink": "Naar de hoofdinhoud gaan",
-  "YOU'RE IN": "JE BENT IN",
-  "JUMP TO": "GA NAAR",
-  "Switch app": "Wissel van app",
-  "Meet": "Meet",
-  "Epicentre": "Epicentre",
-  "Docs": "Docs",
-  "Drive": "Drive",
-  "Mail": "Mail",
-  "Calendar": "Calendar",
-  "Chat": "Chat",
-  "Commander": "Commander",
-  "Home": "Home",
-  "Documents": "Documenten",
-  "Files": "Bestanden",
-  "Video calls": "Videogesprekken",
-  "Email": "E-mail",
-  "Schedule": "Planning",
-  "Messaging": "Berichten",
-  "Admin": "Beheer",
+  "app_switcher": {
+    "you_are_in": "JE BENT IN",
+    "jump_to": "GA NAAR",
+    "switch_app": "Wissel van app",
+    "apps": {
+      "epicentre": { "label": "Epicentre", "subtitle": "Home" },
+      "docs": { "label": "Docs", "subtitle": "Documenten" },
+      "drive": { "label": "Drive", "subtitle": "Bestanden" },
+      "meet": { "label": "Meet", "subtitle": "Videogesprekken" },
+      "mail": { "label": "Mail", "subtitle": "E-mail" },
+      "calendar": { "label": "Calendar", "subtitle": "Planning" },
+      "chat": { "label": "Chat", "subtitle": "Berichten" },
+      "commander": { "label": "Commander", "subtitle": "Beheer" }
+    }
+  },
   "clipboardContent": {
     "url": "Klik op deze link om deel te nemen aan de videoconferentie: {{roomUrl}}",
     "numberAndPin": "Bel {{phoneNumber}} en voer deze code in om telefonisch deel te nemen: {{pinCode}}"

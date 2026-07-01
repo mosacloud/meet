@@ -22,17 +22,14 @@ type AppId =
   | 'chat'
   | 'commander'
 
-const APP_META: Record<
-  AppId,
-  { icon: string; label: string; subtitle: string; color: string; gradientEnd: string }
-> = {
-  epicentre: { icon: '/images/icons/epicentre-icon.svg', label: 'Epicentre', subtitle: 'Home',        color: '#0284C7', gradientEnd: '#0443F2' },
-  docs:      { icon: '/images/icons/file-icon.svg',      label: 'Docs',      subtitle: 'Documents',   color: '#06B6D4', gradientEnd: '#0891B2' },
-  drive:     { icon: '/images/icons/folder-icon.svg',    label: 'Drive',     subtitle: 'Files',       color: '#F2AF05', gradientEnd: '#D97706' },
-  mail:      { icon: '/images/icons/mail-icon.svg',      label: 'Mail',      subtitle: 'Email',       color: '#F8497B', gradientEnd: '#A0033A' },
-  calendar:  { icon: '/images/icons/calendar-icon.svg',  label: 'Calendar',  subtitle: 'Schedule',    color: '#A78BFA', gradientEnd: '#6D3FDE' },
-  chat:      { icon: '/images/icons/chat-icon.svg',      label: 'Chat',      subtitle: 'Messaging',   color: '#FA7108', gradientEnd: '#C2410C' },
-  commander: { icon: '/images/icons/commander-icon.svg', label: 'Commander', subtitle: 'Admin',       color: '#0284C7', gradientEnd: '#0064C8' },
+const APP_META: Record<AppId, { icon: string; color: string; gradientEnd: string }> = {
+  epicentre: { icon: '/images/icons/epicentre-icon.svg', color: '#0284C7', gradientEnd: '#0443F2' },
+  docs:      { icon: '/images/icons/file-icon.svg',      color: '#06B6D4', gradientEnd: '#0891B2' },
+  drive:     { icon: '/images/icons/folder-icon.svg',    color: '#F2AF05', gradientEnd: '#D97706' },
+  mail:      { icon: '/images/icons/mail-icon.svg',      color: '#F8497B', gradientEnd: '#A0033A' },
+  calendar:  { icon: '/images/icons/calendar-icon.svg',  color: '#A78BFA', gradientEnd: '#6D3FDE' },
+  chat:      { icon: '/images/icons/chat-icon.svg',      color: '#FA7108', gradientEnd: '#C2410C' },
+  commander: { icon: '/images/icons/commander-icon.svg', color: '#0284C7', gradientEnd: '#0064C8' },
 }
 
 const MEET_ICON = '/images/icons/camera-icon.svg'
@@ -76,18 +73,16 @@ const AppIcon = ({
 )
 
 const AppTile = ({
+  id,
   href,
   onClick,
-  label,
-  subtitle,
   icon,
   color,
   gradientEnd,
 }: {
+  id: string
   href: string
   onClick: () => void
-  label: string
-  subtitle: string
   icon: string
   color: string
   gradientEnd: string
@@ -113,13 +108,13 @@ const AppTile = ({
         background: hovered ? BG : 'transparent',
       }}
     >
-      <AppIcon icon={icon} label={label} color={color} gradientEnd={gradientEnd} size={36} />
+      <AppIcon icon={icon} label={t(`app_switcher.apps.${id}.label`)} color={color} gradientEnd={gradientEnd} size={36} />
       <div style={{ display: 'flex', flexDirection: 'column', gap: 1, minWidth: 0 }}>
         <span style={{ fontFamily: "'Poppins', system-ui, sans-serif", fontSize: '0.8125rem', fontWeight: 600, color: INK }}>
-          {t(label)}
+          {t(`app_switcher.apps.${id}.label`)}
         </span>
         <span style={{ fontSize: '0.6875rem', color: GRAPHITE, whiteSpace: 'nowrap' }}>
-          {t(subtitle)}
+          {t(`app_switcher.apps.${id}.subtitle`)}
         </span>
       </div>
     </a>
@@ -143,39 +138,46 @@ const Panel = ({
     ...(opensUpward ? { bottom: 'calc(100% + 8px)' } : { top: 'calc(100% + 8px)' }),
     right: 0,
     width: 312,
-    background: SURFACE,
+    background: `linear-gradient(180deg, color-mix(in srgb, ${MEET_COLOR} 8%, transparent) 0%, transparent 100%) top center / 100% 80px no-repeat, ${SURFACE}`,
     border: `1px solid ${BORDER}`,
     borderRadius: 16,
     boxShadow: SHADOW,
     padding: 14,
     zIndex: 2000,
+    animation: `mosaAppSwitcherPanelIn 150ms ${EASE} both`,
   }
 
   return (
     <div style={dropdownStyle}>
+      <style>{`
+        @keyframes mosaAppSwitcherPanelIn {
+          from { opacity: 0; transform: translateY(-4px) scale(0.98); }
+          to   { opacity: 1; transform: translateY(0)    scale(1);    }
+        }
+      `}</style>
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '2px 4px 10px' }}>
-        <AppIcon icon={MEET_ICON} label="Meet" color={MEET_COLOR} gradientEnd={MEET_GRADIENT_END} size={44} />
+        <AppIcon icon={MEET_ICON} label={t('app_switcher.apps.meet.label')} color={MEET_COLOR} gradientEnd={MEET_GRADIENT_END} size={44} />
         <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
           <span style={{ fontFamily: "'Poppins', system-ui, sans-serif", fontSize: '0.6875rem', fontWeight: 700, letterSpacing: '0.16em', textTransform: 'uppercase', color: GRAPHITE }}>
-            {t("YOU'RE IN")}
+            {t('app_switcher.you_are_in')}
           </span>
           <span style={{ fontFamily: "'Poppins', system-ui, sans-serif", fontSize: '1rem', fontWeight: 700, letterSpacing: '-0.01em', color: INK }}>
-            {t('Meet')}
+            {t('app_switcher.apps.meet.label')}
           </span>
         </div>
       </div>
 
       {jumpTo.length > 0 && (
         <>
-          <div style={{ height: 1, background: BORDER, margin: '2px 0 10px' }} />
+          <div style={{ height: 1, background: BORDER, margin: '4px -14px 14px' }} />
           <span style={{ display: 'block', fontFamily: "'Poppins', system-ui, sans-serif", fontSize: '0.6875rem', fontWeight: 700, letterSpacing: '0.16em', textTransform: 'uppercase', color: GRAPHITE, padding: '0 4px', marginBottom: 8 }}>
-            {t('JUMP TO')}
+            {t('app_switcher.jump_to')}
           </span>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 4 }}>
             {jumpTo.map((id) => {
-              const { label, subtitle, icon, color, gradientEnd } = APP_META[id]
+              const { icon, color, gradientEnd } = APP_META[id]
               return (
-                <AppTile key={id} href={appUrls[id]} onClick={onClose} label={label} subtitle={subtitle} icon={icon} color={color} gradientEnd={gradientEnd} />
+                <AppTile key={id} id={id} href={appUrls[id]} onClick={onClose} icon={icon} color={color} gradientEnd={gradientEnd} />
               )
             })}
           </div>
@@ -218,43 +220,30 @@ export const AppSwitcherButton = () => {
   }
 
   return (
-    <div ref={ref} style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+    <div ref={ref} style={{ position: 'relative', display: 'flex', alignItems: 'center', marginRight: -8 }}>
       <button
         type="button"
-        aria-label={t('Switch app')}
+        className="um-btn"
+        aria-label={t('app_switcher.switch_app')}
         aria-expanded={isOpen}
         onClick={handleOpen}
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          width: '40px',
-          height: '40px',
-          padding: '0',
-          background: 'transparent',
-          border: 'none',
-          borderRadius: '8px',
-          cursor: 'pointer',
-          transition: `background 150ms ${EASE}`,
-        }}
-        onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.background = BG }}
-        onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = 'transparent' }}
       >
         <span
           aria-hidden
           style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(3, 3px)',
-            gridTemplateRows: 'repeat(3, 3px)',
-            gap: '2px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
             border: `1px solid ${BORDER}`,
             borderRadius: '6px',
             padding: '6px',
           }}
         >
-          {[...APP_ORDER, APP_ORDER[0], APP_ORDER[1]].map((id, i) => (
-            <span key={i} style={{ width: 3, height: 3, borderRadius: '50%', background: APP_META[id].color }} />
-          ))}
+          <svg width="18" height="18" viewBox="0 0 18 18">
+            {[...APP_ORDER, APP_ORDER[0], APP_ORDER[1]].map((id, i) => (
+              <circle key={i} cx={3 + (i % 3) * 6} cy={3 + Math.floor(i / 3) * 6} r={2} fill={APP_META[id].color} />
+            ))}
+          </svg>
         </span>
       </button>
       {isOpen && <Panel appUrls={appUrls} onClose={() => setIsOpen(false)} opensUpward={opensUpward} />}
