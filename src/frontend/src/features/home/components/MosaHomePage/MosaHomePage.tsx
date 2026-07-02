@@ -178,7 +178,7 @@ export const MosaHomePage = () => {
           <div className="mosa-home__mobile-accents" />
 
           <div className="mosa-home__lang-wrapper">
-            <LanguageSelector />
+            {!isLoggedIn && <LanguageSelector />}
             {isLoggedIn && <AppSwitcherButton />}
             {isLoggedIn && <ProfileDropdown />}
           </div>
