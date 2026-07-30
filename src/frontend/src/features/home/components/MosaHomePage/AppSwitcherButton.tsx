@@ -17,80 +17,64 @@ type AppId =
   | 'epicentre'
   | 'docs'
   | 'drive'
+  | 'meet'
   | 'mail'
   | 'calendar'
   | 'chat'
   | 'commander'
 
-const APP_META: Record<
-  AppId,
-  { icon: string; label: string; subtitle: string; color: string; gradientEnd: string }
-> = {
-  epicentre: { icon: '/images/icons/epicentre-icon.svg', label: 'Epicentre', subtitle: 'Home',        color: '#0284C7', gradientEnd: '#0443F2' },
-  docs:      { icon: '/images/icons/file-icon.svg',      label: 'Docs',      subtitle: 'Documents',   color: '#06B6D4', gradientEnd: '#0891B2' },
-  drive:     { icon: '/images/icons/folder-icon.svg',    label: 'Drive',     subtitle: 'Files',       color: '#F2AF05', gradientEnd: '#D97706' },
-  mail:      { icon: '/images/icons/mail-icon.svg',      label: 'Mail',      subtitle: 'Email',       color: '#F8497B', gradientEnd: '#A0033A' },
-  calendar:  { icon: '/images/icons/calendar-icon.svg',  label: 'Calendar',  subtitle: 'Schedule',    color: '#A78BFA', gradientEnd: '#6D3FDE' },
-  chat:      { icon: '/images/icons/chat-icon.svg',      label: 'Chat',      subtitle: 'Messaging',   color: '#FA7108', gradientEnd: '#C2410C' },
-  commander: { icon: '/images/icons/commander-icon.svg', label: 'Commander', subtitle: 'Admin',       color: '#0284C7', gradientEnd: '#0064C8' },
+const APP_META: Record<AppId, { icon: string; color: string; gradientEnd: string }> = {
+  epicentre: { icon: '/images/icons/epicentre-icon.svg', color: '#0284C7', gradientEnd: '#0443F2' },
+  docs:      { icon: '/images/icons/file-icon.svg',      color: '#06B6D4', gradientEnd: '#0891B2' },
+  drive:     { icon: '/images/icons/folder-icon.svg',    color: '#F2AF05', gradientEnd: '#D97706' },
+  meet:      { icon: '/images/icons/camera-icon.svg',    color: '#00B574', gradientEnd: '#059669' },
+  mail:      { icon: '/images/icons/mail-icon.svg',      color: '#F8497B', gradientEnd: '#A0033A' },
+  calendar:  { icon: '/images/icons/calendar-icon.svg',  color: '#A78BFA', gradientEnd: '#6D3FDE' },
+  chat:      { icon: '/images/icons/chat-icon.svg',      color: '#FA7108', gradientEnd: '#C2410C' },
+  commander: { icon: '/images/icons/commander-icon.svg', color: '#0284C7', gradientEnd: '#0064C8' },
 }
 
-const MEET_ICON = '/images/icons/camera-icon.svg'
-const MEET_COLOR = '#00B574'
-const MEET_GRADIENT_END = '#059669'
+// Fixed order for the trigger button's decorative dot pattern — identical
+// across every Mosa app regardless of which app is current (matches Docs/Drive/Mail/Calendar).
+const DOT_ORDER: AppId[] = ['epicentre', 'drive', 'meet', 'mail', 'calendar', 'chat', 'commander']
 
-const APP_ORDER: AppId[] = ['epicentre', 'docs', 'drive', 'mail', 'calendar', 'chat', 'commander']
+// "meet" is this app itself and is intentionally omitted — it never appears in the jump-to list.
+const NAV_ORDER: AppId[] = ['epicentre', 'docs', 'drive', 'mail', 'calendar', 'chat', 'commander']
 
 /* ── Sub-components ─────────────────────────────────────── */
-const AppIcon = ({
-  icon,
-  label,
-  color,
-  gradientEnd,
-  size = 40,
-}: {
-  icon: string
-  label: string
-  color: string
-  gradientEnd: string
-  size?: number
-}) => (
-  <span
-    style={{
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      flexShrink: 0,
-      width: size,
-      height: size,
-      borderRadius: size <= 36 ? 9 : 12,
-      background: `linear-gradient(135deg, ${color} 0%, ${gradientEnd} 100%)`,
-    }}
-  >
-    <img
-      src={icon}
-      alt={label}
-      style={{ width: size * 0.45, height: size * 0.45, filter: 'brightness(0) invert(1)', display: 'block' }}
-    />
-  </span>
-)
+const AppIcon = ({ id, size = 40 }: { id: AppId; size?: number }) => {
+  const { t } = useTranslation()
+  const { icon, color, gradientEnd } = APP_META[id]
+  return (
+    <span
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexShrink: 0,
+        width: size,
+        height: size,
+        borderRadius: size <= 36 ? 9 : 12,
+        background: `linear-gradient(135deg, ${color} 0%, ${gradientEnd} 100%)`,
+      }}
+    >
+      <img
+        src={icon}
+        alt={t(`app_switcher.apps.${id}.label`)}
+        style={{ width: size * 0.45, height: size * 0.45, filter: 'brightness(0) invert(1)', display: 'block' }}
+      />
+    </span>
+  )
+}
 
 const AppTile = ({
+  id,
   href,
   onClick,
-  label,
-  subtitle,
-  icon,
-  color,
-  gradientEnd,
 }: {
+  id: AppId
   href: string
   onClick: () => void
-  label: string
-  subtitle: string
-  icon: string
-  color: string
-  gradientEnd: string
 }) => {
   const { t } = useTranslation()
   const [hovered, setHovered] = useState(false)
@@ -113,13 +97,13 @@ const AppTile = ({
         background: hovered ? BG : 'transparent',
       }}
     >
-      <AppIcon icon={icon} label={label} color={color} gradientEnd={gradientEnd} size={36} />
+      <AppIcon id={id} size={36} />
       <div style={{ display: 'flex', flexDirection: 'column', gap: 1, minWidth: 0 }}>
         <span style={{ fontFamily: "'Poppins', system-ui, sans-serif", fontSize: '0.8125rem', fontWeight: 600, color: INK }}>
-          {t(label)}
+          {t(`app_switcher.apps.${id}.label`)}
         </span>
         <span style={{ fontSize: '0.6875rem', color: GRAPHITE, whiteSpace: 'nowrap' }}>
-          {t(subtitle)}
+          {t(`app_switcher.apps.${id}.subtitle`)}
         </span>
       </div>
     </a>
@@ -136,14 +120,14 @@ const Panel = ({
   opensUpward: boolean
 }) => {
   const { t } = useTranslation()
-  const jumpTo = APP_ORDER.filter((id) => id in appUrls)
+  const jumpTo = NAV_ORDER.filter((id) => id in appUrls)
 
   const dropdownStyle: CSSProperties = {
     position: 'absolute',
     ...(opensUpward ? { bottom: 'calc(100% + 8px)' } : { top: 'calc(100% + 8px)' }),
     right: 0,
     width: 312,
-    background: SURFACE,
+    background: `linear-gradient(180deg, color-mix(in srgb, ${APP_META.meet.color} 8%, transparent) 0%, transparent 100%) top center / 100% 80px no-repeat, ${SURFACE}`,
     border: `1px solid ${BORDER}`,
     borderRadius: 16,
     boxShadow: SHADOW,
@@ -154,13 +138,13 @@ const Panel = ({
   return (
     <div style={dropdownStyle}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '2px 4px 10px' }}>
-        <AppIcon icon={MEET_ICON} label="Meet" color={MEET_COLOR} gradientEnd={MEET_GRADIENT_END} size={44} />
+        <AppIcon id="meet" size={44} />
         <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
           <span style={{ fontFamily: "'Poppins', system-ui, sans-serif", fontSize: '0.6875rem', fontWeight: 700, letterSpacing: '0.16em', textTransform: 'uppercase', color: GRAPHITE }}>
-            {t("YOU'RE IN")}
+            {t('app_switcher.you_are_in')}
           </span>
           <span style={{ fontFamily: "'Poppins', system-ui, sans-serif", fontSize: '1rem', fontWeight: 700, letterSpacing: '-0.01em', color: INK }}>
-            {t('Meet')}
+            {t('app_switcher.apps.meet.label')}
           </span>
         </div>
       </div>
@@ -169,15 +153,12 @@ const Panel = ({
         <>
           <div style={{ height: 1, background: BORDER, margin: '2px 0 10px' }} />
           <span style={{ display: 'block', fontFamily: "'Poppins', system-ui, sans-serif", fontSize: '0.6875rem', fontWeight: 700, letterSpacing: '0.16em', textTransform: 'uppercase', color: GRAPHITE, padding: '0 4px', marginBottom: 8 }}>
-            {t('JUMP TO')}
+            {t('app_switcher.jump_to')}
           </span>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 4 }}>
-            {jumpTo.map((id) => {
-              const { label, subtitle, icon, color, gradientEnd } = APP_META[id]
-              return (
-                <AppTile key={id} href={appUrls[id]} onClick={onClose} label={label} subtitle={subtitle} icon={icon} color={color} gradientEnd={gradientEnd} />
-              )
-            })}
+            {jumpTo.map((id) => (
+              <AppTile key={id} id={id} href={appUrls[id]} onClick={onClose} />
+            ))}
           </div>
         </>
       )}
@@ -194,7 +175,7 @@ export const AppSwitcherButton = () => {
   const ref = useRef<HTMLDivElement>(null)
 
   const appUrls = config?.APP_URLS ?? {}
-  const hasOtherApps = APP_ORDER.some((id) => id in appUrls)
+  const hasOtherApps = NAV_ORDER.some((id) => id in appUrls)
 
   useEffect(() => {
     if (!isOpen) return
@@ -221,7 +202,7 @@ export const AppSwitcherButton = () => {
     <div ref={ref} style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
       <button
         type="button"
-        aria-label={t('Switch app')}
+        aria-label={t('app_switcher.switch_app')}
         aria-expanded={isOpen}
         onClick={handleOpen}
         style={{
@@ -243,18 +224,25 @@ export const AppSwitcherButton = () => {
         <span
           aria-hidden
           style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(3, 3px)',
-            gridTemplateRows: 'repeat(3, 3px)',
-            gap: '2px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
             border: `1px solid ${BORDER}`,
             borderRadius: '6px',
-            padding: '6px',
+            padding: '5px',
           }}
         >
-          {[...APP_ORDER, APP_ORDER[0], APP_ORDER[1]].map((id, i) => (
-            <span key={i} style={{ width: 3, height: 3, borderRadius: '50%', background: APP_META[id].color }} />
-          ))}
+          <svg width="18" height="18" viewBox="0 0 18 18">
+            {[...DOT_ORDER, DOT_ORDER[0], DOT_ORDER[1]].map((id, i) => (
+              <circle
+                key={i}
+                cx={3 + (i % 3) * 6}
+                cy={3 + Math.floor(i / 3) * 6}
+                r={2}
+                fill={APP_META[id].color}
+              />
+            ))}
+          </svg>
         </span>
       </button>
       {isOpen && <Panel appUrls={appUrls} onClose={() => setIsOpen(false)} opensUpward={opensUpward} />}
