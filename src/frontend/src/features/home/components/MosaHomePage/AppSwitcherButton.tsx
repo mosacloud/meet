@@ -43,7 +43,6 @@ const NAV_ORDER: AppId[] = ['epicentre', 'docs', 'drive', 'mail', 'calendar', 'c
 
 /* ── Sub-components ─────────────────────────────────────── */
 const AppIcon = ({ id, size = 40 }: { id: AppId; size?: number }) => {
-  const { t } = useTranslation()
   const { icon, color, gradientEnd } = APP_META[id]
   return (
     <span
@@ -60,7 +59,7 @@ const AppIcon = ({ id, size = 40 }: { id: AppId; size?: number }) => {
     >
       <img
         src={icon}
-        alt={t(`app_switcher.apps.${id}.label`)}
+        alt=""
         style={{ width: size * 0.45, height: size * 0.45, filter: 'brightness(0) invert(1)', display: 'block' }}
       />
     </span>
