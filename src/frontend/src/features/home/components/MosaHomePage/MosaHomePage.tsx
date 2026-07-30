@@ -6,7 +6,7 @@ import { useUser } from '@/features/auth/api/useUser'
 import { authUrl } from '@/features/auth/utils/authUrl'
 import { navigateTo } from '@/navigation/navigateTo'
 import { generateRoomId, useCreateRoom, isRoomValid } from '@/features/rooms'
-import { userChoicesStore } from '@/stores/userChoices'
+import { userStore } from '@/stores/user'
 import { LaterMeetingDialog } from '@/features/home/components/LaterMeetingDialog'
 import { ApiRoom } from '@/features/rooms/api/ApiRoom'
 import { AppSwitcherButton } from './AppSwitcherButton'
@@ -93,7 +93,7 @@ export const MosaHomePage = () => {
   const createRef = useRef<HTMLDivElement>(null)
 
   const { mutateAsync: createRoom } = useCreateRoom()
-  const { username } = useSnapshot(userChoicesStore)
+  const { username } = useSnapshot(userStore)
 
   useEffect(() => {
     document.title = t('mosa.pageTitle')
