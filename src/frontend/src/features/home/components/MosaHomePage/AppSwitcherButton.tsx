@@ -41,6 +41,8 @@ const DOT_ORDER: AppId[] = ['epicentre', 'drive', 'meet', 'mail', 'calendar', 'c
 // "meet" is this app itself and is intentionally omitted — it never appears in the jump-to list.
 const NAV_ORDER: AppId[] = ['epicentre', 'docs', 'drive', 'mail', 'calendar', 'chat', 'commander']
 
+const MOBILE_BREAKPOINT_QUERY = '(max-width: 480px)'
+
 /* ── Sub-components ─────────────────────────────────────── */
 const AppIcon = ({ id, size = 40 }: { id: AppId; size?: number }) => {
   const { icon, color, gradientEnd } = APP_META[id]
@@ -113,26 +115,51 @@ const Panel = ({
   appUrls,
   onClose,
   opensUpward,
+  isMobile,
+  fixedOffset,
 }: {
   appUrls: Record<string, string>
   onClose: () => void
   opensUpward: boolean
+  isMobile: boolean
+  fixedOffset: number
 }) => {
   const { t } = useTranslation()
   const jumpTo = NAV_ORDER.filter((id) => id in appUrls)
 
-  const dropdownStyle: CSSProperties = {
-    position: 'absolute',
-    ...(opensUpward ? { bottom: 'calc(100% + 8px)' } : { top: 'calc(100% + 8px)' }),
-    right: 0,
-    width: 312,
-    background: `linear-gradient(180deg, color-mix(in srgb, ${APP_META.meet.color} 8%, transparent) 0%, transparent 100%) top center / 100% 80px no-repeat, ${SURFACE}`,
-    border: `1px solid ${BORDER}`,
-    borderRadius: 16,
-    boxShadow: SHADOW,
-    padding: 14,
-    zIndex: 2000,
-  }
+  const dropdownBackground = `linear-gradient(180deg, color-mix(in srgb, ${APP_META.meet.color} 8%, transparent) 0%, transparent 100%) top center / 100% 80px no-repeat, ${SURFACE}`
+
+  const dropdownStyle: CSSProperties = isMobile
+    ? {
+        position: 'fixed',
+        ...(opensUpward ? { bottom: fixedOffset } : { top: fixedOffset }),
+        left: '1rem',
+        right: '1rem',
+        margin: '0 auto',
+        width: 'auto',
+        maxWidth: 312,
+        maxHeight: Math.max(0, window.innerHeight - fixedOffset - 16),
+        boxSizing: 'border-box',
+        overflowY: 'auto',
+        background: dropdownBackground,
+        border: `1px solid ${BORDER}`,
+        borderRadius: 16,
+        boxShadow: SHADOW,
+        padding: 14,
+        zIndex: 2000,
+      }
+    : {
+        position: 'absolute',
+        ...(opensUpward ? { bottom: 'calc(100% + 8px)' } : { top: 'calc(100% + 8px)' }),
+        right: 0,
+        width: 312,
+        background: dropdownBackground,
+        border: `1px solid ${BORDER}`,
+        borderRadius: 16,
+        boxShadow: SHADOW,
+        padding: 14,
+        zIndex: 2000,
+      }
 
   return (
     <div style={dropdownStyle}>
@@ -171,6 +198,10 @@ export const AppSwitcherButton = () => {
   const { t } = useTranslation()
   const [isOpen, setIsOpen] = useState(false)
   const [opensUpward, setOpensUpward] = useState(false)
+  const [isMobile, setIsMobile] = useState(
+    () => typeof window !== 'undefined' && window.matchMedia(MOBILE_BREAKPOINT_QUERY).matches
+  )
+  const [fixedOffset, setFixedOffset] = useState(0)
   const ref = useRef<HTMLDivElement>(null)
 
   const appUrls = config?.APP_URLS ?? {}
@@ -187,13 +218,37 @@ export const AppSwitcherButton = () => {
     return () => document.removeEventListener('mousedown', handler)
   }, [isOpen])
 
+  useEffect(() => {
+    const mql = window.matchMedia(MOBILE_BREAKPOINT_QUERY)
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches)
+    mql.addEventListener('change', handler)
+    return () => mql.removeEventListener('change', handler)
+  }, [])
+
+  const measure = () => {
+    if (ref.current) {
+      const rect = ref.current.getBoundingClientRect()
+      const upward = window.innerHeight - rect.bottom < 320
+      setOpensUpward(upward)
+      setFixedOffset(upward ? window.innerHeight - rect.top + 8 : rect.bottom + 8)
+    }
+  }
+
+  useEffect(() => {
+    if (!isOpen) return
+    measure()
+    window.addEventListener('resize', measure)
+    window.addEventListener('orientationchange', measure)
+    return () => {
+      window.removeEventListener('resize', measure)
+      window.removeEventListener('orientationchange', measure)
+    }
+  }, [isOpen])
+
   if (!hasOtherApps) return null
 
   const handleOpen = () => {
-    if (ref.current) {
-      const rect = ref.current.getBoundingClientRect()
-      setOpensUpward(window.innerHeight - rect.bottom < 320)
-    }
+    measure()
     setIsOpen((v) => !v)
   }
 
@@ -244,7 +299,15 @@ export const AppSwitcherButton = () => {
           </svg>
         </span>
       </button>
-      {isOpen && <Panel appUrls={appUrls} onClose={() => setIsOpen(false)} opensUpward={opensUpward} />}
+      {isOpen && (
+        <Panel
+          appUrls={appUrls}
+          onClose={() => setIsOpen(false)}
+          opensUpward={opensUpward}
+          isMobile={isMobile}
+          fixedOffset={fixedOffset}
+        />
+      )}
     </div>
   )
 }
