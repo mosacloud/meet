@@ -252,11 +252,30 @@
 }
 
 /* Language switcher */
-.mosa-home__lang-wrapper {
+.mosa-home__header-row {
   position: absolute;
   top: 1.5rem;
+  left: 1.5rem;
   right: 1.5rem;
   z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+@media (max-width: 900px) {
+  .mosa-home__header-row {
+    position: static;
+    top: auto;
+    left: auto;
+    right: auto;
+    padding: 1.5rem;
+    justify-content: space-between;
+  }
+}
+
+/* Language switcher */
+.mosa-home__lang-wrapper {
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -337,15 +356,18 @@
   .mosa-home__mobile-header {
     display: flex;
     align-items: center;
-    justify-content: center;
-    padding: 1.5rem;
-    z-index: 10;
   }
 }
 
 .mosa-home__mobile-logo {
   height: 1.75rem;
   width: auto;
+}
+
+@media (max-width: 360px) {
+  .mosa-home__mobile-logo {
+    height: 1.375rem;
+  }
 }
 
 /* Mobile footer */
@@ -539,6 +561,7 @@
 
 .mosa-home__join-input {
   flex: 1;
+  min-width: 0;
   padding: 1rem 1rem;
   font-size: 0.9375rem;
   color: #333333;
@@ -548,6 +571,7 @@
   outline: none;
   transition: all 0.2s ease;
   font-family: var(--font-body);
+  text-overflow: ellipsis;
 }
 
 .mosa-home__join-input::placeholder {
@@ -560,6 +584,7 @@
 }
 
 .mosa-home__join-button {
+  flex-shrink: 0;
   padding: 1rem 1.5rem;
   font-size: 1rem;
   font-weight: 600;

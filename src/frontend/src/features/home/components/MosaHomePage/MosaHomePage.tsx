@@ -21,6 +21,8 @@ import {
   LinkIcon,
 } from './MosaHomePage.icons'
 
+const MOBILE_MENU_BREAKPOINT_QUERY = '(max-width: 430px)'
+
 const LANGUAGES = [
   { code: 'en', value: 'en', label: 'EN' },
   { code: 'nl', value: 'nl', label: 'NL' },
@@ -91,6 +93,17 @@ export const MosaHomePage = () => {
   const [isCreateOpen, setIsCreateOpen] = useState(false)
   const [laterRoom, setLaterRoom] = useState<null | ApiRoom>(null)
   const createRef = useRef<HTMLDivElement>(null)
+
+  const [isNarrowMobile, setIsNarrowMobile] = useState(
+    () => typeof window !== 'undefined' && window.matchMedia(MOBILE_MENU_BREAKPOINT_QUERY).matches
+  )
+
+  useEffect(() => {
+    const mql = window.matchMedia(MOBILE_MENU_BREAKPOINT_QUERY)
+    const handler = (e: MediaQueryListEvent) => setIsNarrowMobile(e.matches)
+    mql.addEventListener('change', handler)
+    return () => mql.removeEventListener('change', handler)
+  }, [])
 
   const { mutateAsync: createRoom } = useCreateRoom()
   const { username } = useSnapshot(userStore)
@@ -177,18 +190,20 @@ export const MosaHomePage = () => {
         <div className="mosa-home__form-panel">
           <div className="mosa-home__mobile-accents" />
 
-          <div className="mosa-home__lang-wrapper">
-            <LanguageSelector />
-            {isLoggedIn && <AppSwitcherButton />}
-            {isLoggedIn && <ProfileDropdown />}
-          </div>
+          <div className="mosa-home__header-row">
+            <div className="mosa-home__mobile-header">
+              <img
+                className="mosa-home__mobile-logo"
+                src="/logos/mosa-cloud-logo.svg"
+                alt="mosa.cloud"
+              />
+            </div>
 
-          <div className="mosa-home__mobile-header">
-            <img
-              className="mosa-home__mobile-logo"
-              src="/logos/mosa-cloud-logo.svg"
-              alt="mosa.cloud"
-            />
+            <div className="mosa-home__lang-wrapper">
+              {!(isLoggedIn && isNarrowMobile) && <LanguageSelector />}
+              {isLoggedIn && <AppSwitcherButton />}
+              {isLoggedIn && <ProfileDropdown />}
+            </div>
           </div>
 
           <div className="mosa-home__form-container">
