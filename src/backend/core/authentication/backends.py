@@ -8,6 +8,7 @@ from django.core.exceptions import (
     SuspiciousOperation,
     ValidationError,
 )
+from django.core.validators import URLValidator
 from django.utils.translation import gettext_lazy as _
 
 from lasuite.oidc_login.backends import (
@@ -22,6 +23,30 @@ from core.services.marketing import (
     get_marketing_service,
 )
 from core.validators import sub_validator
+
+
+def sanitize_picture_claim(picture):
+    """
+    Validate the OIDC "picture" claim before it reaches the User model.
+
+    An unvalidated claim can crash the whole login with a 500: User.full_clean()
+    runs the URLField validation on every save and raises an uncaught
+    ValidationError for a malformed or oversized value.
+
+    Args:
+      picture: The raw "picture" claim from the userinfo response.
+
+    Returns:
+      str | None: The claim if it is a valid, appropriately-sized URL, else None.
+
+    """
+    if not isinstance(picture, str) or len(picture) > 500:
+        return None
+    try:
+        URLValidator()(picture)
+    except ValidationError:
+        return None
+    return picture
 
 
 class OIDCAuthenticationBackend(LaSuiteOIDCAuthenticationBackend):
@@ -46,6 +71,7 @@ class OIDCAuthenticationBackend(LaSuiteOIDCAuthenticationBackend):
             # Get user's full name from OIDC fields defined in settings
             "full_name": self.compute_full_name(user_info),
             "short_name": user_info.get(settings.OIDC_USERINFO_SHORTNAME_FIELD),
+            "picture": sanitize_picture_claim(user_info.get("picture")),
         }
 
     def post_get_or_create_user(self, user, claims, is_new_user):
