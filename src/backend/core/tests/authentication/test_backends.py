@@ -673,7 +673,9 @@ def test_get_extra_claims_picks_up_picture():
         "picture": "https://example.com/avatar.jpg",
     }
 
-    assert klass.get_extra_claims(user_info)["picture"] == "https://example.com/avatar.jpg"
+    assert (
+        klass.get_extra_claims(user_info)["picture"] == "https://example.com/avatar.jpg"
+    )
 
 
 @pytest.mark.parametrize(

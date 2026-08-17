@@ -71,7 +71,11 @@ const Avatar = ({
       style={showImage ? undefined : { backgroundColor: color }}
     >
       {showImage ? (
-        <img src={picture ?? undefined} alt="" onError={() => setImageFailed(true)} />
+        <img
+          src={picture ?? undefined}
+          alt=""
+          onError={() => setImageFailed(true)}
+        />
       ) : (
         initials
       )}
@@ -182,14 +186,24 @@ export const ProfileDropdown = () => {
         aria-label={t('profile.openMenu', { name: displayName })}
         aria-expanded={isOpen}
       >
-        <Avatar picture={user.picture} initials={initials} color={avatarColor} size="sm" />
+        <Avatar
+          picture={user.picture}
+          initials={initials}
+          color={avatarColor}
+          size="sm"
+        />
       </button>
 
       {isOpen && (
         <div className="um-popover" role="dialog">
           {/* identity */}
           <div className="um-identity">
-            <Avatar picture={user.picture} initials={initials} color={avatarColor} size="md" />
+            <Avatar
+              picture={user.picture}
+              initials={initials}
+              color={avatarColor}
+              size="md"
+            />
             <div className="um-identity__info">
               {user.full_name && (
                 <p className="um-identity__name">{user.full_name}</p>
