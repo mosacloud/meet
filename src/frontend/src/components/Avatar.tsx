@@ -1,5 +1,5 @@
 import { css, cva, RecipeVariantProps } from '@/styled-system/css'
-import React, { useMemo } from 'react'
+import React, { useEffect, useMemo } from 'react'
 
 const avatar = cva({
   base: {
@@ -54,37 +54,66 @@ const getInitials = (name?: string): string => {
 export type AvatarProps = React.HTMLAttributes<HTMLDivElement> & {
   name?: string
   bgColor?: string
+  picture?: string
 } & RecipeVariantProps<typeof avatar>
 
 export const Avatar = React.memo(
-  ({ name, bgColor, context, notification, style, ...props }: AvatarProps) => {
+  ({
+    name,
+    bgColor,
+    picture,
+    context,
+    notification,
+    style,
+    ...props
+  }: AvatarProps) => {
     const initials = useMemo(() => getInitials(name), [name])
+    const [imageFailed, setImageFailed] = React.useState(false)
+    useEffect(() => {
+      setImageFailed(false)
+    }, [picture])
+    const showImage = Boolean(picture) && !imageFailed
+
     return (
       <div
-        style={{ backgroundColor: bgColor, ...style }}
+        style={{ backgroundColor: showImage ? undefined : bgColor, ...style }}
         className={avatar({ context, notification })}
         {...props}
       >
-        <svg
-          viewBox="0 0 100 100"
-          aria-hidden="true"
-          className={css({ width: '100%', height: '100%', display: 'block' })}
-        >
-          <text
-            x="50"
-            y={50}
-            textAnchor="middle"
-            fontSize="52"
-            fontWeight="500"
-            fill="currentColor"
+        {showImage ? (
+          <img
+            src={picture}
+            alt=""
+            onError={() => setImageFailed(true)}
             className={css({
-              transform:
-                'translateY(calc(var(--avatar-cap-height, 0.7) * 0.5em))',
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              display: 'block',
             })}
+          />
+        ) : (
+          <svg
+            viewBox="0 0 100 100"
+            aria-hidden="true"
+            className={css({ width: '100%', height: '100%', display: 'block' })}
           >
-            {initials}
-          </text>
-        </svg>
+            <text
+              x="50"
+              y={50}
+              textAnchor="middle"
+              fontSize="52"
+              fontWeight="500"
+              fill="currentColor"
+              className={css({
+                transform:
+                  'translateY(calc(var(--avatar-cap-height, 0.7) * 0.5em))',
+              })}
+            >
+              {initials}
+            </text>
+          </svg>
+        )}
       </div>
     )
   }

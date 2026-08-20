@@ -5,6 +5,7 @@ import { Text } from '@/primitives/Text'
 import { useTranslation } from 'react-i18next'
 import { Avatar } from '@/components/Avatar'
 import { getParticipantColor } from '@/features/rooms/utils/getParticipantColor'
+import { getParticipantPicture } from '@/features/rooms/utils/getParticipantPicture'
 import {
   getParticipantIsRoomAdmin,
   getParticipantIsRoomOwner,
@@ -98,7 +99,11 @@ export const ParticipantRow = ({ participant }: ParticipantListItemProps) => {
     >
       <HStack flex="1" minW="0">
         <div className={css({ position: 'relative', flexShrink: 0 })}>
-          <Avatar name={name} bgColor={getParticipantColor(participant)} />
+          <Avatar
+            name={name}
+            bgColor={getParticipantColor(participant)}
+            picture={getParticipantPicture(participant)}
+          />
           <PinBadge participant={participant} />
           <UnauthenticatedBadge participant={participant} />
         </div>

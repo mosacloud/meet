@@ -57,6 +57,34 @@ def test_generate_token_authenticated_fallback_user_representation():
     assert claims["name"] == str(user)
 
 
+def test_generate_token_authenticated_includes_picture_attribute():
+    """An authenticated user's OIDC picture should be exposed as a participant attribute."""
+    user = UserFactory(full_name="Jane Doe", picture="https://example.com/pic.png")
+
+    token = generate_token(room="my-room", user=user)
+
+    claims = decode_token(token)
+    assert claims["attributes"]["picture"] == "https://example.com/pic.png"
+
+
+def test_generate_token_authenticated_no_picture():
+    """A user without a picture should get an empty (not null) attribute."""
+    user = UserFactory(full_name="Jane Doe", picture=None)
+
+    token = generate_token(room="my-room", user=user)
+
+    claims = decode_token(token)
+    assert claims["attributes"]["picture"] == ""
+
+
+def test_generate_token_anonymous_no_picture():
+    """Anonymous users never carry a picture attribute."""
+    token = generate_token(room="my-room", user=AnonymousUser())
+
+    claims = decode_token(token)
+    assert claims["attributes"]["picture"] == ""
+
+
 def test_generate_token_explicit_username_overrides_default():
     """An explicitly provided username should take precedence over the full name."""
     user = UserFactory(full_name="Jane Doe")

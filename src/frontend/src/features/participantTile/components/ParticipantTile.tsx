@@ -27,6 +27,7 @@ import { KeyboardShortcutHint } from './KeyboardShortcutHint'
 import { layoutStore, clearPinnedTrack } from '@/stores/layout'
 import { ParticipantMetadata } from './ParticipantMetadata'
 import { getParticipantColor } from '@/features/rooms/utils/getParticipantColor'
+import { getParticipantPicture } from '@/features/rooms/utils/getParticipantPicture'
 
 export function TrackRefContextIfNeeded(
   props: React.PropsWithChildren<{
@@ -92,6 +93,7 @@ export const ParticipantTile: (
   const [hasKeyboardFocus, setHasKeyboardFocus] = React.useState(false)
 
   const participantColor = getParticipantColor(trackReference.participant)
+  const participantPicture = getParticipantPicture(trackReference.participant)
 
   const { identity, name } = useParticipantInfo({
     participant: trackReference.participant,
@@ -150,6 +152,7 @@ export const ParticipantTile: (
                 <ParticipantPlaceholder
                   color={participantColor}
                   displayedNamed={participantName}
+                  picture={participantPicture}
                 />
               </div>
               {!disableMetadata && (
