@@ -24,6 +24,9 @@ from core.services.marketing import (
 )
 from core.validators import sub_validator
 
+PICTURE_MAX_LENGTH = User._meta.get_field("picture").max_length  # noqa: SLF001
+_validate_picture_url = URLValidator(schemes=["http", "https"])
+
 
 def sanitize_picture_claim(picture):
     """
@@ -40,10 +43,10 @@ def sanitize_picture_claim(picture):
       str | None: The claim if it is a valid, appropriately-sized URL, else None.
 
     """
-    if not isinstance(picture, str) or len(picture) > 500:
+    if not isinstance(picture, str) or len(picture) > PICTURE_MAX_LENGTH:
         return None
     try:
-        URLValidator()(picture)
+        _validate_picture_url(picture)
     except ValidationError:
         return None
     return picture
@@ -55,6 +58,27 @@ class OIDCAuthenticationBackend(LaSuiteOIDCAuthenticationBackend):
     This class overrides the default OIDC Authentication Backend to accommodate differences
     in the User and Identity models, and handles signed and/or encrypted UserInfo response.
     """
+
+    # Claims that must be cleared on the user once the IdP stops sending them,
+    # rather than left stale (the base `update_user_if_needed` only ever applies
+    # truthy claim values, so a claim that becomes None is otherwise ignored).
+    NULLABLE_CLAIM_FIELDS = ("picture",)
+
+    def update_user_if_needed(self, user, claims):
+        """Update user claims, additionally clearing stale nullable claims."""
+        super().update_user_if_needed(user, claims)
+
+        stale_fields = [
+            field
+            for field in self.NULLABLE_CLAIM_FIELDS
+            if field in claims
+            and claims[field] is None
+            and getattr(user, field, None) is not None
+        ]
+        if stale_fields:
+            for field in stale_fields:
+                setattr(user, field, None)
+            user.save(update_fields=stale_fields)
 
     def get_extra_claims(self, user_info):
         """

@@ -686,13 +686,15 @@ def test_get_extra_claims_picks_up_picture():
         ["https://example.com/avatar.jpg"],
         "not-a-url",
         "https://" + "a" * 500 + ".com",
+        "ftp://example.com/avatar.jpg",
     ],
 )
 def test_sanitize_picture_claim_rejects_invalid_values(picture):
     """
-    An invalid "picture" claim (wrong type, malformed URL, or too long for the
-    User.picture field) should be dropped rather than raised, so that a broken
-    claim can't crash the login with a ValidationError from User.full_clean().
+    An invalid "picture" claim (wrong type, malformed URL, non-http(s) scheme,
+    or too long for the User.picture field) should be dropped rather than
+    raised, so that a broken claim can't crash the login with a
+    ValidationError from User.full_clean().
     """
     assert sanitize_picture_claim(picture) is None
 
@@ -701,3 +703,30 @@ def test_sanitize_picture_claim_accepts_valid_url():
     """A well-formed, appropriately-sized URL claim should be returned as-is."""
     url = "https://example.com/avatar.jpg"
     assert sanitize_picture_claim(url) == url
+
+
+def test_update_user_if_needed_clears_stale_picture(django_assert_num_queries):
+    """A previously stored picture should be cleared once the IdP stops sending it."""
+    user = UserFactory(picture="https://example.com/old-pic.png")
+    klass = OIDCAuthenticationBackend()
+
+    # save() -> full_clean() -> validate_unique() on the unique `sub` field adds
+    # a SELECT + savepoint on top of the UPDATE itself.
+    with django_assert_num_queries(4):  # clear picture
+        klass.update_user_if_needed(user, {"email": user.email, "picture": None})
+
+    user.refresh_from_db()
+    assert user.picture is None
+
+
+def test_update_user_if_needed_keeps_picture_when_unchanged(django_assert_num_queries):
+    """No extra query should be issued when the picture claim hasn't changed."""
+    picture = "https://example.com/pic.png"
+    user = UserFactory(picture=picture)
+    klass = OIDCAuthenticationBackend()
+
+    with django_assert_num_queries(0):
+        klass.update_user_if_needed(user, {"email": user.email, "picture": picture})
+
+    user.refresh_from_db()
+    assert user.picture == picture
