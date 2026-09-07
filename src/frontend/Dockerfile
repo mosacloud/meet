@@ -41,19 +41,19 @@ ENV VITE_API_BASE_URL=${VITE_API_BASE_URL}
 ARG VITE_APP_TITLE
 ENV VITE_APP_TITLE=${VITE_APP_TITLE}
 
-ARG VITE_MEDIA_BASE_URL
-ENV VITE_MEDIA_BASE_URL=${VITE_MEDIA_BASE_URL}
-
 RUN npm run build
 
 # ---- Front-end image ----
 FROM nginxinc/nginx-unprivileged:1.30.5-alpine3.24 AS frontend-production
 
 USER root
-RUN apk upgrade --no-cache libexpat && \
-    apk add --no-cache --upgrade 'pcre2>=10.49-r0' 'tiff>=4.7.2-r0' \
-        'libx11>=1.8.14-r0' 'ca-certificates>=20261020-r0' && \
-    apk del curl
+
+# Upgrade system packages to install security updates
+RUN apk update && \
+    apk upgrade && \
+    apk del curl && \
+    rm -rf /var/cache/apk/*
+
 USER nginx
 
 # Un-privileged user running the application
