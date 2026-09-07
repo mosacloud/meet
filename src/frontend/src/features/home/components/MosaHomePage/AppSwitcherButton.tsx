@@ -23,23 +23,74 @@ type AppId =
   | 'chat'
   | 'commander'
 
-const APP_META: Record<AppId, { icon: string; color: string; gradientEnd: string }> = {
-  epicentre: { icon: '/images/icons/epicentre-icon.svg', color: '#0284C7', gradientEnd: '#0443F2' },
-  docs:      { icon: '/images/icons/file-icon.svg',      color: '#06B6D4', gradientEnd: '#0891B2' },
-  drive:     { icon: '/images/icons/folder-icon.svg',    color: '#F2AF05', gradientEnd: '#D97706' },
-  meet:      { icon: '/images/icons/camera-icon.svg',    color: '#00B574', gradientEnd: '#059669' },
-  mail:      { icon: '/images/icons/mail-icon.svg',      color: '#F8497B', gradientEnd: '#A0033A' },
-  calendar:  { icon: '/images/icons/calendar-icon.svg',  color: '#A78BFA', gradientEnd: '#6D3FDE' },
-  chat:      { icon: '/images/icons/chat-icon.svg',      color: '#FA7108', gradientEnd: '#C2410C' },
-  commander: { icon: '/images/icons/commander-icon.svg', color: '#0284C7', gradientEnd: '#0064C8' },
+const APP_META: Record<
+  AppId,
+  { icon: string; color: string; gradientEnd: string }
+> = {
+  epicentre: {
+    icon: '/images/icons/epicentre-icon.svg',
+    color: '#0284C7',
+    gradientEnd: '#0443F2',
+  },
+  docs: {
+    icon: '/images/icons/file-icon.svg',
+    color: '#06B6D4',
+    gradientEnd: '#0891B2',
+  },
+  drive: {
+    icon: '/images/icons/folder-icon.svg',
+    color: '#F2AF05',
+    gradientEnd: '#D97706',
+  },
+  meet: {
+    icon: '/images/icons/camera-icon.svg',
+    color: '#00B574',
+    gradientEnd: '#059669',
+  },
+  mail: {
+    icon: '/images/icons/mail-icon.svg',
+    color: '#F8497B',
+    gradientEnd: '#A0033A',
+  },
+  calendar: {
+    icon: '/images/icons/calendar-icon.svg',
+    color: '#A78BFA',
+    gradientEnd: '#6D3FDE',
+  },
+  chat: {
+    icon: '/images/icons/chat-icon.svg',
+    color: '#FA7108',
+    gradientEnd: '#C2410C',
+  },
+  commander: {
+    icon: '/images/icons/commander-icon.svg',
+    color: '#0284C7',
+    gradientEnd: '#0064C8',
+  },
 }
 
 // Fixed order for the trigger button's decorative dot pattern — identical
 // across every Mosa app regardless of which app is current (matches Docs/Drive/Mail/Calendar).
-const DOT_ORDER: AppId[] = ['epicentre', 'drive', 'meet', 'mail', 'calendar', 'chat', 'commander']
+const DOT_ORDER: AppId[] = [
+  'epicentre',
+  'drive',
+  'meet',
+  'mail',
+  'calendar',
+  'chat',
+  'commander',
+]
 
 // "meet" is this app itself and is intentionally omitted — it never appears in the jump-to list.
-const NAV_ORDER: AppId[] = ['epicentre', 'docs', 'drive', 'mail', 'calendar', 'chat', 'commander']
+const NAV_ORDER: AppId[] = [
+  'epicentre',
+  'docs',
+  'drive',
+  'mail',
+  'calendar',
+  'chat',
+  'commander',
+]
 
 const MOBILE_BREAKPOINT_QUERY = '(max-width: 480px)'
 
@@ -62,7 +113,12 @@ const AppIcon = ({ id, size = 40 }: { id: AppId; size?: number }) => {
       <img
         src={icon}
         alt=""
-        style={{ width: size * 0.45, height: size * 0.45, filter: 'brightness(0) invert(1)', display: 'block' }}
+        style={{
+          width: size * 0.45,
+          height: size * 0.45,
+          filter: 'brightness(0) invert(1)',
+          display: 'block',
+        }}
       />
     </span>
   )
@@ -99,11 +155,31 @@ const AppTile = ({
       }}
     >
       <AppIcon id={id} size={36} />
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 1, minWidth: 0 }}>
-        <span style={{ fontFamily: "'Poppins', system-ui, sans-serif", fontSize: '0.8125rem', fontWeight: 600, color: INK }}>
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 1,
+          minWidth: 0,
+        }}
+      >
+        <span
+          style={{
+            fontFamily: "'Poppins', system-ui, sans-serif",
+            fontSize: '0.8125rem',
+            fontWeight: 600,
+            color: INK,
+          }}
+        >
           {t(`app_switcher.apps.${id}.label`)}
         </span>
-        <span style={{ fontSize: '0.6875rem', color: GRAPHITE, whiteSpace: 'nowrap' }}>
+        <span
+          style={{
+            fontSize: '0.6875rem',
+            color: GRAPHITE,
+            whiteSpace: 'nowrap',
+          }}
+        >
           {t(`app_switcher.apps.${id}.subtitle`)}
         </span>
       </div>
@@ -150,7 +226,9 @@ const Panel = ({
       }
     : {
         position: 'absolute',
-        ...(opensUpward ? { bottom: 'calc(100% + 8px)' } : { top: 'calc(100% + 8px)' }),
+        ...(opensUpward
+          ? { bottom: 'calc(100% + 8px)' }
+          : { top: 'calc(100% + 8px)' }),
         right: 0,
         width: 312,
         background: dropdownBackground,
@@ -163,13 +241,37 @@ const Panel = ({
 
   return (
     <div style={dropdownStyle}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '2px 4px 10px' }}>
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 12,
+          padding: '2px 4px 10px',
+        }}
+      >
         <AppIcon id="meet" size={44} />
         <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-          <span style={{ fontFamily: "'Poppins', system-ui, sans-serif", fontSize: '0.6875rem', fontWeight: 700, letterSpacing: '0.16em', textTransform: 'uppercase', color: GRAPHITE }}>
+          <span
+            style={{
+              fontFamily: "'Poppins', system-ui, sans-serif",
+              fontSize: '0.6875rem',
+              fontWeight: 700,
+              letterSpacing: '0.16em',
+              textTransform: 'uppercase',
+              color: GRAPHITE,
+            }}
+          >
             {t('app_switcher.you_are_in')}
           </span>
-          <span style={{ fontFamily: "'Poppins', system-ui, sans-serif", fontSize: '1rem', fontWeight: 700, letterSpacing: '-0.01em', color: INK }}>
+          <span
+            style={{
+              fontFamily: "'Poppins', system-ui, sans-serif",
+              fontSize: '1rem',
+              fontWeight: 700,
+              letterSpacing: '-0.01em',
+              color: INK,
+            }}
+          >
             {t('app_switcher.apps.meet.label')}
           </span>
         </div>
@@ -177,11 +279,27 @@ const Panel = ({
 
       {jumpTo.length > 0 && (
         <>
-          <div style={{ height: 1, background: BORDER, margin: '2px 0 10px' }} />
-          <span style={{ display: 'block', fontFamily: "'Poppins', system-ui, sans-serif", fontSize: '0.6875rem', fontWeight: 700, letterSpacing: '0.16em', textTransform: 'uppercase', color: GRAPHITE, padding: '0 4px', marginBottom: 8 }}>
+          <div
+            style={{ height: 1, background: BORDER, margin: '2px 0 10px' }}
+          />
+          <span
+            style={{
+              display: 'block',
+              fontFamily: "'Poppins', system-ui, sans-serif",
+              fontSize: '0.6875rem',
+              fontWeight: 700,
+              letterSpacing: '0.16em',
+              textTransform: 'uppercase',
+              color: GRAPHITE,
+              padding: '0 4px',
+              marginBottom: 8,
+            }}
+          >
             {t('app_switcher.jump_to')}
           </span>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 4 }}>
+          <div
+            style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 4 }}
+          >
             {jumpTo.map((id) => (
               <AppTile key={id} id={id} href={appUrls[id]} onClick={onClose} />
             ))}
@@ -199,7 +317,9 @@ export const AppSwitcherButton = () => {
   const [isOpen, setIsOpen] = useState(false)
   const [opensUpward, setOpensUpward] = useState(false)
   const [isMobile, setIsMobile] = useState(
-    () => typeof window !== 'undefined' && window.matchMedia(MOBILE_BREAKPOINT_QUERY).matches
+    () =>
+      typeof window !== 'undefined' &&
+      window.matchMedia(MOBILE_BREAKPOINT_QUERY).matches
   )
   const [fixedOffset, setFixedOffset] = useState(0)
   const ref = useRef<HTMLDivElement>(null)
@@ -230,7 +350,9 @@ export const AppSwitcherButton = () => {
       const rect = ref.current.getBoundingClientRect()
       const upward = window.innerHeight - rect.bottom < 320
       setOpensUpward(upward)
-      setFixedOffset(upward ? window.innerHeight - rect.top + 8 : rect.bottom + 8)
+      setFixedOffset(
+        upward ? window.innerHeight - rect.top + 8 : rect.bottom + 8
+      )
     }
   }
 
@@ -253,7 +375,10 @@ export const AppSwitcherButton = () => {
   }
 
   return (
-    <div ref={ref} style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+    <div
+      ref={ref}
+      style={{ position: 'relative', display: 'flex', alignItems: 'center' }}
+    >
       <button
         type="button"
         aria-label={t('app_switcher.switch_app')}
@@ -272,8 +397,13 @@ export const AppSwitcherButton = () => {
           cursor: 'pointer',
           transition: `background 150ms ${EASE}`,
         }}
-        onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.background = BG }}
-        onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = 'transparent' }}
+        onMouseEnter={(e) => {
+          ;(e.currentTarget as HTMLButtonElement).style.background = BG
+        }}
+        onMouseLeave={(e) => {
+          ;(e.currentTarget as HTMLButtonElement).style.background =
+            'transparent'
+        }}
       >
         <span
           aria-hidden
