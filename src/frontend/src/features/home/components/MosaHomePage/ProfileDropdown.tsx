@@ -6,23 +6,32 @@ import { logout } from '@/features/auth/utils/logout'
 // ─── avatar color hash — matches @gouvfr-lasuite/ui-kit logic ────────────────
 
 const AVATAR_COLORS = [
-  'gray', 'brand', 'red', 'orange', 'brown',
-  'green', 'blue-1', 'blue-2', 'pink', 'yellow', 'purple',
+  'gray',
+  'brand',
+  'red',
+  'orange',
+  'brown',
+  'green',
+  'blue-1',
+  'blue-2',
+  'pink',
+  'yellow',
+  'purple',
 ] as const
 type AvatarColor = (typeof AVATAR_COLORS)[number]
 
 const PALETTE: Record<AvatarColor, string> = {
-  gray:     '#6b7280',
-  brand:    '#3b82f6',
-  red:      '#ef4444',
-  orange:   '#f97316',
-  brown:    '#d97706',
-  green:    '#0d9488',
+  gray: '#6b7280',
+  brand: '#3b82f6',
+  red: '#ef4444',
+  orange: '#f97316',
+  brown: '#d97706',
+  green: '#0d9488',
   'blue-1': '#3b82f6',
   'blue-2': '#0ea5e9',
-  pink:     '#ec4899',
-  yellow:   '#eab308',
-  purple:   '#a855f7',
+  pink: '#ec4899',
+  yellow: '#eab308',
+  purple: '#a855f7',
 }
 
 function getUserColor(name: string): AvatarColor {
@@ -52,7 +61,17 @@ const LANGUAGES = [
 // ─── icons ────────────────────────────────────────────────────────────────────
 
 const LogoutIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+  <svg
+    width="18"
+    height="18"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    aria-hidden="true"
+  >
     <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
     <polyline points="16 17 21 12 16 7" />
     <line x1="21" y1="12" x2="9" y2="12" />
@@ -70,7 +89,10 @@ const ChevronDownSmall = ({ rotated }: { rotated: boolean }) => (
     strokeLinecap="round"
     strokeLinejoin="round"
     aria-hidden="true"
-    style={{ transform: rotated ? 'rotate(180deg)' : 'none', transition: 'transform 0.15s ease' }}
+    style={{
+      transform: rotated ? 'rotate(180deg)' : 'none',
+      transition: 'transform 0.15s ease',
+    }}
   >
     <polyline points="2 4 6 8 10 4" />
   </svg>
@@ -130,7 +152,10 @@ export const ProfileDropdown = () => {
         aria-label={t('profile.openMenu', { name: displayName })}
         aria-expanded={isOpen}
       >
-        <span className="um-avatar um-avatar--sm" style={{ backgroundColor: avatarColor }}>
+        <span
+          className="um-avatar um-avatar--sm"
+          style={{ backgroundColor: avatarColor }}
+        >
           {initials}
         </span>
       </button>
@@ -139,7 +164,10 @@ export const ProfileDropdown = () => {
         <div className="um-popover" role="dialog">
           {/* identity */}
           <div className="um-identity">
-            <span className="um-avatar um-avatar--md" style={{ backgroundColor: avatarColor }}>
+            <span
+              className="um-avatar um-avatar--md"
+              style={{ backgroundColor: avatarColor }}
+            >
               {initials}
             </span>
             <div className="um-identity__info">
@@ -153,7 +181,11 @@ export const ProfileDropdown = () => {
           <div className="um-divider" />
 
           {/* logout */}
-          <button className="um-action-row" onClick={handleLogout} type="button">
+          <button
+            className="um-action-row"
+            onClick={handleLogout}
+            type="button"
+          >
             <LogoutIcon />
             <span>{t('logout')}</span>
           </button>
@@ -175,16 +207,18 @@ export const ProfileDropdown = () => {
 
             {isLangOpen && (
               <div className="um-lang-dropdown">
-                {LANGUAGES.filter((l) => l.code !== currentLang.code).map((lang) => (
-                  <button
-                    key={lang.code}
-                    className="um-lang-option"
-                    onClick={() => handleLanguageSelect(lang)}
-                    type="button"
-                  >
-                    {lang.label}
-                  </button>
-                ))}
+                {LANGUAGES.filter((l) => l.code !== currentLang.code).map(
+                  (lang) => (
+                    <button
+                      key={lang.code}
+                      className="um-lang-option"
+                      onClick={() => handleLanguageSelect(lang)}
+                      type="button"
+                    >
+                      {lang.label}
+                    </button>
+                  )
+                )}
               </div>
             )}
           </div>
