@@ -45,7 +45,13 @@ RUN npm run build
 FROM nginxinc/nginx-unprivileged:1.30.4-alpine3.24 AS frontend-production
 
 USER root
-RUN apk del curl
+
+# Upgrade system packages to install security updates
+RUN apk update && \
+    apk upgrade && \
+    apk del curl && \
+    rm -rf /var/cache/apk/*
+
 USER nginx
 
 # Un-privileged user running the application
