@@ -50,9 +50,14 @@ RUN npm run build
 FROM nginx/nginx-unprivileged:1.31.9-alpine3.24 AS frontend-production
 
 USER root
-RUN apk add --no-cache --upgrade 'libxml2>=2.13.9-r3' && \
+
+# Upgrade system packages to install security updates
+RUN apk update && \
+    apk upgrade && \
     apk del curl && \
-    rm -f /usr/share/nginx/html/50x.html
+    rm -f /usr/share/nginx/html/50x.html && \
+    rm -rf /var/cache/apk/*
+
 USER nginx
 
 # Un-privileged user running the application
