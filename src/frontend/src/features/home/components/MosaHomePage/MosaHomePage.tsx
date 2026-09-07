@@ -95,7 +95,9 @@ export const MosaHomePage = () => {
   const createRef = useRef<HTMLDivElement>(null)
 
   const [isNarrowMobile, setIsNarrowMobile] = useState(
-    () => typeof window !== 'undefined' && window.matchMedia(MOBILE_MENU_BREAKPOINT_QUERY).matches
+    () =>
+      typeof window !== 'undefined' &&
+      window.matchMedia(MOBILE_MENU_BREAKPOINT_QUERY).matches
   )
 
   useEffect(() => {
@@ -208,7 +210,9 @@ export const MosaHomePage = () => {
 
           <div className="mosa-home__form-container">
             <div className="mosa-home__form-header">
-              <p className="mosa-home__eyebrow">{t('mosa.productDescription')}</p>
+              <p className="mosa-home__eyebrow">
+                {t('mosa.productDescription')}
+              </p>
               <h2>
                 {t('mosa.welcomeTo')}{' '}
                 <span className="mosa-home__product-highlight">Meet</span>
