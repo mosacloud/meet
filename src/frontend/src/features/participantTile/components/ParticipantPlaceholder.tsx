@@ -29,10 +29,11 @@ const StyledAvatarWrapper = styled('div', {
 type ParticipantPlaceholderProps = {
   color: string
   displayedNamed: string
+  picture?: string
 }
 
 export const ParticipantPlaceholder = React.memo(
-  ({ color, displayedNamed }: ParticipantPlaceholderProps) => {
+  ({ color, displayedNamed, picture }: ParticipantPlaceholderProps) => {
     const backgroundGradient = useMemo(
       () => getParticipantBackgroundGradient(color),
       [color]
@@ -45,7 +46,12 @@ export const ParticipantPlaceholder = React.memo(
         }}
       >
         <StyledAvatarWrapper>
-          <Avatar name={displayedNamed} bgColor={color} context="placeholder" />
+          <Avatar
+            name={displayedNamed}
+            bgColor={color}
+            picture={picture}
+            context="placeholder"
+          />
         </StyledAvatarWrapper>
       </StyledParticipantPlaceHolder>
     )

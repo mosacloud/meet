@@ -8,6 +8,7 @@ from django.core.exceptions import (
     SuspiciousOperation,
     ValidationError,
 )
+from django.core.validators import URLValidator
 from django.utils.translation import gettext_lazy as _
 
 from lasuite.oidc_login.backends import (
@@ -23,6 +24,33 @@ from core.services.marketing import (
 )
 from core.validators import sub_validator
 
+PICTURE_MAX_LENGTH = User._meta.get_field("picture").max_length  # noqa: SLF001
+_validate_picture_url = URLValidator(schemes=["http", "https"])
+
+
+def sanitize_picture_claim(picture):
+    """
+    Validate the OIDC "picture" claim before it reaches the User model.
+
+    An unvalidated claim can crash the whole login with a 500: User.full_clean()
+    runs the URLField validation on every save and raises an uncaught
+    ValidationError for a malformed or oversized value.
+
+    Args:
+      picture: The raw "picture" claim from the userinfo response.
+
+    Returns:
+      str | None: The claim if it is a valid, appropriately-sized URL, else None.
+
+    """
+    if not isinstance(picture, str) or len(picture) > PICTURE_MAX_LENGTH:
+        return None
+    try:
+        _validate_picture_url(picture)
+    except ValidationError:
+        return None
+    return picture
+
 
 class OIDCAuthenticationBackend(LaSuiteOIDCAuthenticationBackend):
     """Custom OpenID Connect (OIDC) Authentication Backend.
@@ -30,6 +58,27 @@ class OIDCAuthenticationBackend(LaSuiteOIDCAuthenticationBackend):
     This class overrides the default OIDC Authentication Backend to accommodate differences
     in the User and Identity models, and handles signed and/or encrypted UserInfo response.
     """
+
+    # Claims that must be cleared on the user once the IdP stops sending them,
+    # rather than left stale (the base `update_user_if_needed` only ever applies
+    # truthy claim values, so a claim that becomes None is otherwise ignored).
+    NULLABLE_CLAIM_FIELDS = ("picture",)
+
+    def update_user_if_needed(self, user, claims):
+        """Update user claims, additionally clearing stale nullable claims."""
+        super().update_user_if_needed(user, claims)
+
+        stale_fields = [
+            field
+            for field in self.NULLABLE_CLAIM_FIELDS
+            if field in claims
+            and claims[field] is None
+            and getattr(user, field, None) is not None
+        ]
+        if stale_fields:
+            for field in stale_fields:
+                setattr(user, field, None)
+            user.save(update_fields=stale_fields)
 
     def get_extra_claims(self, user_info):
         """
@@ -46,6 +95,7 @@ class OIDCAuthenticationBackend(LaSuiteOIDCAuthenticationBackend):
             # Get user's full name from OIDC fields defined in settings
             "full_name": self.compute_full_name(user_info),
             "short_name": user_info.get(settings.OIDC_USERINFO_SHORTNAME_FIELD),
+            "picture": sanitize_picture_claim(user_info.get("picture")),
         }
 
     def post_get_or_create_user(self, user, claims, is_new_user):

@@ -110,9 +110,11 @@ def generate_token(  # noqa: PLR0917
     if user.is_anonymous:
         identity = participant_id or str(uuid4())
         default_username = "Anonymous"
+        picture = ""
     else:
         identity = str(user.sub)
         default_username = user.full_name or str(user)
+        picture = user.picture or ""
 
     if color is None:
         color = generate_color(identity)
@@ -135,6 +137,7 @@ def generate_token(  # noqa: PLR0917
                 "color": color,
                 "room_role": role,
                 "is_authenticated": "true" if user.is_authenticated else "false",
+                "picture": picture,
             }
         )
     )

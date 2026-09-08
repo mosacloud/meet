@@ -36,12 +36,13 @@ class UserSerializer(serializers.ModelSerializer):
             "email",
             "full_name",
             "short_name",
+            "picture",
             "timezone",
             "language",
             "default_room_access_level",
             "default_room_configuration",
         ]
-        read_only_fields = ["id", "email", "full_name", "short_name"]
+        read_only_fields = ["id", "email", "full_name", "short_name", "picture"]
 
     def validate_default_room_configuration(self, value):
         """Validate the default room configuration against the RoomConfiguration schema."""

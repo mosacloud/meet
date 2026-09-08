@@ -49,6 +49,40 @@ function getUserInitials(name: string): string {
     .toUpperCase()
 }
 
+// ─── avatar ───────────────────────────────────────────────────────────────────
+
+const Avatar = ({
+  picture,
+  initials,
+  color,
+  size,
+}: {
+  picture?: string | null
+  initials: string
+  color: string
+  size: 'sm' | 'md'
+}) => {
+  const [imageFailed, setImageFailed] = useState(false)
+  const showImage = Boolean(picture) && !imageFailed
+
+  return (
+    <span
+      className={`um-avatar um-avatar--${size}`}
+      style={showImage ? undefined : { backgroundColor: color }}
+    >
+      {showImage ? (
+        <img
+          src={picture ?? undefined}
+          alt=""
+          onError={() => setImageFailed(true)}
+        />
+      ) : (
+        initials
+      )}
+    </span>
+  )
+}
+
 // ─── language data ────────────────────────────────────────────────────────────
 
 const LANGUAGES = [
@@ -152,24 +186,24 @@ export const ProfileDropdown = () => {
         aria-label={t('profile.openMenu', { name: displayName })}
         aria-expanded={isOpen}
       >
-        <span
-          className="um-avatar um-avatar--sm"
-          style={{ backgroundColor: avatarColor }}
-        >
-          {initials}
-        </span>
+        <Avatar
+          picture={user.picture}
+          initials={initials}
+          color={avatarColor}
+          size="sm"
+        />
       </button>
 
       {isOpen && (
         <div className="um-popover" role="dialog">
           {/* identity */}
           <div className="um-identity">
-            <span
-              className="um-avatar um-avatar--md"
-              style={{ backgroundColor: avatarColor }}
-            >
-              {initials}
-            </span>
+            <Avatar
+              picture={user.picture}
+              initials={initials}
+              color={avatarColor}
+              size="md"
+            />
             <div className="um-identity__info">
               {user.full_name && (
                 <p className="um-identity__name">{user.full_name}</p>
