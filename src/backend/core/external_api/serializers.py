@@ -78,7 +78,9 @@ class RoomSerializer(serializers.ModelSerializer):
 
         # Add room URL for direct access
         if settings.APPLICATION_BASE_URL:
-            output["url"] = f"{settings.APPLICATION_BASE_URL}/{instance.slug}"
+            output["url"] = utils.build_shareable_room_url(
+                settings.APPLICATION_BASE_URL, instance.slug
+            )
 
         # Add telephony information if enabled
         if settings.ROOM_TELEPHONY_ENABLED:

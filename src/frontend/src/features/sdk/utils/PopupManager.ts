@@ -1,4 +1,4 @@
-import { getRouteUrl } from '@/navigation/getRouteUrl'
+import { getShareableRoomUrl } from '@/navigation/getShareableRoomUrl'
 import {
   CallbackCreationRoomData,
   ClientMessageType,
@@ -75,7 +75,7 @@ export class PopupManager {
           onRoomData(data.room)
           this.sendRoomData({
             room: {
-              url: getRouteUrl('room', data.room.slug),
+              url: getShareableRoomUrl(data.room.slug),
               ...data.room,
             },
           })
