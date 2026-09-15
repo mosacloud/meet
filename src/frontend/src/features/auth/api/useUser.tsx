@@ -3,6 +3,7 @@ import { keys } from '@/api/queryKeys'
 import { fetchUser } from './fetchUser'
 import { type ApiUser } from './ApiUser'
 import { useEffect, useMemo } from 'react'
+import { useLocation } from 'wouter'
 import { useConfig } from '@/api/useConfig'
 import { hasLoggedInBefore, markLoggedIn } from '../utils/hasLoggedInBefore'
 
@@ -23,9 +24,8 @@ const isSilentLoginDisabledByUrl = () => {
  * prompt before it ever sees that input (see the "open meet-links ask for
  * login" ticket).
  */
-const isGuestEntryPointGated = () => {
-  if (typeof window === 'undefined') return false
-  return window.location.pathname === '/' && !hasLoggedInBefore()
+const isGuestEntryPointGated = (pathname: string) => {
+  return pathname === '/' && !hasLoggedInBefore()
 }
 
 /**
@@ -39,9 +39,13 @@ export const useUser = (
   } = {}
 ) => {
   const { data, isLoading: isConfigLoading } = useConfig()
+  const [pathname] = useLocation()
 
   const disabledByUrl = useMemo(() => isSilentLoginDisabledByUrl(), [])
-  const guestEntryPointGated = useMemo(() => isGuestEntryPointGated(), [])
+  const guestEntryPointGated = useMemo(
+    () => isGuestEntryPointGated(pathname),
+    [pathname]
+  )
 
   const options = useMemo(() => {
     if (isConfigLoading) return
