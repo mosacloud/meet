@@ -84,8 +84,8 @@ const CreateMeetingButton = () => {
     setIsPending(false)
     popupManager.sendRoomData({
       room: {
-        url: getShareableRoomUrl(data.room.slug),
         ...data.room,
+        url: getShareableRoomUrl(data.room.slug),
       },
     })
   }, [data])
