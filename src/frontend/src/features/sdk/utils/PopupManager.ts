@@ -75,8 +75,8 @@ export class PopupManager {
           onRoomData(data.room)
           this.sendRoomData({
             room: {
-              url: getShareableRoomUrl(data.room.slug),
               ...data.room,
+              url: getShareableRoomUrl(data.room.slug),
             },
           })
           return
