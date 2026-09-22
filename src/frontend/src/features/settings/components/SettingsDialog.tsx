@@ -11,6 +11,7 @@ import { useUser } from '@/features/auth/api/useUser'
 import { LoginButton } from '@/components/LoginButton'
 import { logout } from '@/features/auth/utils/logout'
 import { useMediaQuery } from '@/features/rooms/livekit/hooks/useMediaQuery'
+import { shouldShowLanguagePicker } from '@/utils/mosaLanguage'
 import { RoomsTab } from './tabs/RoomsTab'
 
 export type SettingsDialogProps = Pick<DialogProps, 'isOpen' | 'onOpenChange'>
@@ -57,6 +58,11 @@ export const SettingsDialog = (props: SettingsDialogProps) => {
   const { t, i18n } = useTranslation('settings')
   const { user, isLoggedIn } = useUser()
   const { languagesList, currentLanguage } = useLanguageLabels()
+  const showLanguageField = shouldShowLanguagePicker(
+    isLoggedIn,
+    user?.language_confirmed_by_idp,
+    user?.language
+  )
 
   const dialogEl = useRef<HTMLDivElement>(null)
   const isWideScreen = useMediaQuery('(min-width: 800px)') // fixme - hardcoded 50rem in pixel
@@ -94,16 +100,20 @@ export const SettingsDialog = (props: SettingsDialogProps) => {
           <LoginButton />
         </>
       )}
-      <H lvl={2}>{t('language.heading')}</H>
-      <Field
-        type="select"
-        label={t('language.label')}
-        items={languagesList}
-        defaultSelectedKey={currentLanguage.key}
-        onSelectionChange={(lang) => {
-          i18n.changeLanguage(lang as string)
-        }}
-      />
+      {showLanguageField && (
+        <>
+          <H lvl={2}>{t('language.heading')}</H>
+          <Field
+            type="select"
+            label={t('language.label')}
+            items={languagesList}
+            defaultSelectedKey={currentLanguage.key}
+            onSelectionChange={(lang) => {
+              i18n.changeLanguage(lang as string)
+            }}
+          />
+        </>
+      )}
     </div>
   )
 
