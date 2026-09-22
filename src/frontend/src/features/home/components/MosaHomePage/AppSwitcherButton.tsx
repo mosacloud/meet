@@ -5,6 +5,10 @@ import { useConfig } from '@/api/useConfig'
 /* ── Design tokens ──────────────────────────────────────── */
 const SURFACE = '#ffffff'
 const BG = '#f7f8fa'
+// Matches `colors.greyscale.100` in this app's own Panda CSS tokens
+// (src/styled-system/tokens) — used for this trigger's hover instead of BG
+// because BG equals the page background color here, which would be invisible.
+const HOVER = '#eeeeee'
 const BORDER = '#e6eaf1'
 const INK = '#333333'
 const GRAPHITE = '#5a6577'
@@ -221,7 +225,11 @@ const Panel = ({
         border: `1px solid ${BORDER}`,
         borderRadius: 16,
         boxShadow: SHADOW,
-        padding: 14,
+        // Vertical-only: horizontal padding lives on the header/jump-to rows
+        // instead, so the divider between them can be a plain full-width
+        // element that reaches both edges (matches Commander's row-level
+        // border pattern and mosa.cloud/brand's edge-to-edge dividers).
+        padding: '14px 0',
         zIndex: 2000,
       }
     : {
@@ -235,18 +243,22 @@ const Panel = ({
         border: `1px solid ${BORDER}`,
         borderRadius: 16,
         boxShadow: SHADOW,
-        padding: 14,
+        padding: '14px 0',
         zIndex: 2000,
       }
 
   return (
-    <div style={dropdownStyle}>
+    <div
+      style={dropdownStyle}
+      role="dialog"
+      aria-label={t('app_switcher.switch_app')}
+    >
       <div
         style={{
           display: 'flex',
           alignItems: 'center',
           gap: 12,
-          padding: '2px 4px 10px',
+          padding: '2px 14px 10px',
         }}
       >
         <AppIcon id="meet" size={44} />
@@ -291,14 +303,19 @@ const Panel = ({
               letterSpacing: '0.16em',
               textTransform: 'uppercase',
               color: GRAPHITE,
-              padding: '0 4px',
+              padding: '0 14px',
               marginBottom: 8,
             }}
           >
             {t('app_switcher.jump_to')}
           </span>
           <div
-            style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 4 }}
+            style={{
+              display: 'grid',
+              gridTemplateColumns: '1fr 1fr',
+              gap: 4,
+              padding: '0 14px',
+            }}
           >
             {jumpTo.map((id) => (
               <AppTile key={id} id={id} href={appUrls[id]} onClick={onClose} />
@@ -323,19 +340,30 @@ export const AppSwitcherButton = () => {
   )
   const [fixedOffset, setFixedOffset] = useState(0)
   const ref = useRef<HTMLDivElement>(null)
+  const triggerRef = useRef<HTMLButtonElement>(null)
 
   const appUrls = config?.APP_URLS ?? {}
   const hasOtherApps = NAV_ORDER.some((id) => id in appUrls)
 
   useEffect(() => {
     if (!isOpen) return
-    const handler = (e: MouseEvent) => {
+    const handleClickOutside = (e: MouseEvent) => {
       if (ref.current && !ref.current.contains(e.target as Node)) {
         setIsOpen(false)
       }
     }
-    document.addEventListener('mousedown', handler)
-    return () => document.removeEventListener('mousedown', handler)
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setIsOpen(false)
+        triggerRef.current?.focus()
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    document.addEventListener('keydown', handleKeyDown)
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+      document.removeEventListener('keydown', handleKeyDown)
+    }
   }, [isOpen])
 
   useEffect(() => {
@@ -361,9 +389,11 @@ export const AppSwitcherButton = () => {
     measure()
     window.addEventListener('resize', measure)
     window.addEventListener('orientationchange', measure)
+    window.addEventListener('scroll', measure, true)
     return () => {
       window.removeEventListener('resize', measure)
       window.removeEventListener('orientationchange', measure)
+      window.removeEventListener('scroll', measure, true)
     }
   }, [isOpen])
 
@@ -380,8 +410,10 @@ export const AppSwitcherButton = () => {
       style={{ position: 'relative', display: 'flex', alignItems: 'center' }}
     >
       <button
+        ref={triggerRef}
         type="button"
         aria-label={t('app_switcher.switch_app')}
+        aria-haspopup="dialog"
         aria-expanded={isOpen}
         onClick={handleOpen}
         style={{
@@ -395,10 +427,10 @@ export const AppSwitcherButton = () => {
           border: 'none',
           borderRadius: '8px',
           cursor: 'pointer',
-          transition: `background 150ms ${EASE}`,
+          transition: `background 150ms ${EASE}, box-shadow 150ms ${EASE}`,
         }}
         onMouseEnter={(e) => {
-          ;(e.currentTarget as HTMLButtonElement).style.background = BG
+          ;(e.currentTarget as HTMLButtonElement).style.background = HOVER
         }}
         onMouseLeave={(e) => {
           ;(e.currentTarget as HTMLButtonElement).style.background =
@@ -411,6 +443,7 @@ export const AppSwitcherButton = () => {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
+            background: SURFACE,
             border: `1px solid ${BORDER}`,
             borderRadius: '6px',
             padding: '5px',
