@@ -20,6 +20,7 @@ from rest_framework.exceptions import PermissionDenied
 from timezone_field.rest_framework import TimeZoneSerializerField
 
 from core import models, utils
+from core.authentication.backends import OIDCAuthenticationBackend
 
 logger = logging.getLogger(__name__)
 
@@ -28,6 +29,7 @@ class UserSerializer(serializers.ModelSerializer):
     """Serialize users."""
 
     timezone = TimeZoneSerializerField()
+    language_confirmed_by_idp = serializers.SerializerMethodField()
 
     class Meta:
         model = models.User
@@ -36,12 +38,43 @@ class UserSerializer(serializers.ModelSerializer):
             "email",
             "full_name",
             "short_name",
+            "picture",
             "timezone",
             "language",
+            "language_confirmed_by_idp",
             "default_room_access_level",
             "default_room_configuration",
         ]
-        read_only_fields = ["id", "email", "full_name", "short_name"]
+        read_only_fields = [
+            "id",
+            "email",
+            "full_name",
+            "short_name",
+            "picture",
+            "language_confirmed_by_idp",
+        ]
+
+    def get_language_confirmed_by_idp(self, obj):
+        """
+        Whether this session's OIDC login presented a usable "locale" claim
+        (see `OIDCAuthenticationBackend.compute_language`). Read from the
+        session, not the user row: `language` alone can't tell an IdP-
+        confirmed "en-us" apart from a row that never had a locale claim.
+
+        Returns None (not False) when unknown — no request/session, or `obj`
+        isn't the requester (this serializer is reused for other users too,
+        e.g. room-access listings). The frontend must not treat None the
+        same as an explicit False — see the push-guard in
+        `useSyncUserPreferencesWithBackend.tsx`.
+        """
+        request = self.context.get("request")
+        requesting_user = getattr(request, "user", None)
+        if not requesting_user or requesting_user.pk != obj.pk:
+            return None
+        session = getattr(request, "session", None)
+        if session is None:
+            return None
+        return session.get(OIDCAuthenticationBackend.LANGUAGE_CONFIRMED_SESSION_KEY)
 
     def validate_default_room_configuration(self, value):
         """Validate the default room configuration against the RoomConfiguration schema."""
