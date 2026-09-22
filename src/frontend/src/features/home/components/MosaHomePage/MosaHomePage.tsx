@@ -7,6 +7,7 @@ import { authUrl } from '@/features/auth/utils/authUrl'
 import { navigateTo } from '@/navigation/navigateTo'
 import { generateRoomId, useCreateRoom, isRoomValid } from '@/features/rooms'
 import { userStore } from '@/stores/user'
+import { shouldShowLanguagePicker } from '@/utils/mosaLanguage'
 import { LaterMeetingDialog } from '@/features/home/components/LaterMeetingDialog'
 import { ApiRoom } from '@/features/rooms/api/ApiRoom'
 import { AppSwitcherButton } from './AppSwitcherButton'
@@ -20,8 +21,6 @@ import {
   PlusIcon,
   LinkIcon,
 } from './MosaHomePage.icons'
-
-const MOBILE_MENU_BREAKPOINT_QUERY = '(max-width: 430px)'
 
 const LANGUAGES = [
   { code: 'en', value: 'en', label: 'EN' },
@@ -88,24 +87,16 @@ const LanguageSelector = () => {
 
 export const MosaHomePage = () => {
   const { t } = useTranslation('home')
-  const { isLoggedIn } = useUser()
+  const { user, isLoggedIn } = useUser()
+  const showLanguageSelector = shouldShowLanguagePicker(
+    isLoggedIn,
+    user?.language_confirmed_by_idp,
+    user?.language
+  )
   const [meetingCode, setMeetingCode] = useState('')
   const [isCreateOpen, setIsCreateOpen] = useState(false)
   const [laterRoom, setLaterRoom] = useState<null | ApiRoom>(null)
   const createRef = useRef<HTMLDivElement>(null)
-
-  const [isNarrowMobile, setIsNarrowMobile] = useState(
-    () =>
-      typeof window !== 'undefined' &&
-      window.matchMedia(MOBILE_MENU_BREAKPOINT_QUERY).matches
-  )
-
-  useEffect(() => {
-    const mql = window.matchMedia(MOBILE_MENU_BREAKPOINT_QUERY)
-    const handler = (e: MediaQueryListEvent) => setIsNarrowMobile(e.matches)
-    mql.addEventListener('change', handler)
-    return () => mql.removeEventListener('change', handler)
-  }, [])
 
   const { mutateAsync: createRoom } = useCreateRoom()
   const { username } = useSnapshot(userStore)
@@ -202,7 +193,7 @@ export const MosaHomePage = () => {
             </div>
 
             <div className="mosa-home__lang-wrapper">
-              {!(isLoggedIn && isNarrowMobile) && <LanguageSelector />}
+              {showLanguageSelector && <LanguageSelector />}
               {isLoggedIn && <AppSwitcherButton />}
               {isLoggedIn && <ProfileDropdown />}
             </div>
