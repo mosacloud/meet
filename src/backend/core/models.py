@@ -169,6 +169,7 @@ class User(AbstractBaseUser, BaseModel, auth_models.PermissionsMixin):
     short_name = models.CharField(
         _("short name"), max_length=100, null=True, blank=True
     )
+    picture = models.URLField(_("picture"), max_length=500, null=True, blank=True)
     language = models.CharField(
         max_length=10,
         choices=settings.LANGUAGES,

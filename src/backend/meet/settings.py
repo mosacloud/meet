@@ -571,7 +571,7 @@ class Base(Configuration):
         {}, environ_name="OIDC_AUTH_REQUEST_EXTRA_PARAMS", environ_prefix=None
     )
     OIDC_RP_SCOPES = values.Value(
-        "openid email", environ_name="OIDC_RP_SCOPES", environ_prefix=None
+        "openid email profile", environ_name="OIDC_RP_SCOPES", environ_prefix=None
     )
     OIDC_USE_PKCE = values.BooleanValue(
         default=False, environ_name="OIDC_USE_PKCE", environ_prefix=None
