@@ -570,8 +570,16 @@ class Base(Configuration):
     OIDC_AUTH_REQUEST_EXTRA_PARAMS = values.DictValue(
         {}, environ_name="OIDC_AUTH_REQUEST_EXTRA_PARAMS", environ_prefix=None
     )
+    # "ui_locales" lets the frontend hint the IdP's own login-page language
+    # (e.g. Zitadel's hosted login) via a query param on /authenticate/ —
+    # forwarded as-is by OIDCAuthenticationRequestView.get_extra_params.
+    OIDC_AUTH_REQUEST_FORWARDED_PARAMS = values.ListValue(
+        ["login_hint", "ui_locales"],
+        environ_name="OIDC_AUTH_REQUEST_FORWARDED_PARAMS",
+        environ_prefix=None,
+    )
     OIDC_RP_SCOPES = values.Value(
-        "openid email", environ_name="OIDC_RP_SCOPES", environ_prefix=None
+        "openid email profile", environ_name="OIDC_RP_SCOPES", environ_prefix=None
     )
     OIDC_USE_PKCE = values.BooleanValue(
         default=False, environ_name="OIDC_USE_PKCE", environ_prefix=None
