@@ -1,20 +1,25 @@
-import { CSSProperties, useEffect, useRef, useState } from 'react'
+import { CSSProperties, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useConfig } from '@/api/useConfig'
+import { useDismissablePopup } from '@/hooks/useDismissablePopup'
+import { useMobileBreakpoint } from '@/hooks/useMobileBreakpoint'
+import { usePopupPlacement } from '@/hooks/usePopupPlacement'
+import {
+  SURFACE,
+  HOVER,
+  BORDER,
+  INK,
+  GRAPHITE,
+  EASE,
+  SHADOW,
+  MOBILE_BREAKPOINT_QUERY,
+} from '@/utils/mosaPopupTokens'
 
-/* ── Design tokens ──────────────────────────────────────── */
-const SURFACE = '#ffffff'
+/* ── Design tokens local to this component ─────────────────── */
 const BG = '#f7f8fa'
 // Matches `colors.greyscale.100` in this app's own Panda CSS tokens
 // (src/styled-system/tokens) — used for this trigger's hover instead of BG
 // because BG equals the page background color here, which would be invisible.
-const HOVER = '#eeeeee'
-const BORDER = '#e6eaf1'
-const INK = '#333333'
-const GRAPHITE = '#5a6577'
-const EASE = 'cubic-bezier(0.4, 0, 0.2, 1)'
-const SHADOW =
-  '0 2px 4px rgba(0,0,0,.02), 0 4px 8px rgba(0,0,0,.03), 0 8px 16px rgba(0,0,0,.04), 0 16px 32px rgba(0,0,0,.05), 0 32px 64px rgba(0,0,0,.08)'
 
 /* ── App metadata ───────────────────────────────────────── */
 type AppId =
@@ -95,8 +100,6 @@ const NAV_ORDER: AppId[] = [
   'chat',
   'commander',
 ]
-
-const MOBILE_BREAKPOINT_QUERY = '(max-width: 480px)'
 
 /* ── Sub-components ─────────────────────────────────────── */
 const AppIcon = ({ id, size = 40 }: { id: AppId; size?: number }) => {
@@ -332,70 +335,21 @@ export const AppSwitcherButton = () => {
   const { data: config } = useConfig()
   const { t } = useTranslation()
   const [isOpen, setIsOpen] = useState(false)
-  const [opensUpward, setOpensUpward] = useState(false)
-  const [isMobile, setIsMobile] = useState(
-    () =>
-      typeof window !== 'undefined' &&
-      window.matchMedia(MOBILE_BREAKPOINT_QUERY).matches
-  )
-  const [fixedOffset, setFixedOffset] = useState(0)
+  const isMobile = useMobileBreakpoint(MOBILE_BREAKPOINT_QUERY)
   const ref = useRef<HTMLDivElement>(null)
   const triggerRef = useRef<HTMLButtonElement>(null)
 
   const appUrls = config?.APP_URLS ?? {}
   const hasOtherApps = NAV_ORDER.some((id) => id in appUrls)
 
-  useEffect(() => {
-    if (!isOpen) return
-    const handleClickOutside = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) {
-        setIsOpen(false)
-      }
-    }
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        setIsOpen(false)
-        triggerRef.current?.focus()
-      }
-    }
-    document.addEventListener('mousedown', handleClickOutside)
-    document.addEventListener('keydown', handleKeyDown)
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
-      document.removeEventListener('keydown', handleKeyDown)
-    }
-  }, [isOpen])
+  useDismissablePopup(ref, triggerRef, isOpen, setIsOpen)
 
-  useEffect(() => {
-    const mql = window.matchMedia(MOBILE_BREAKPOINT_QUERY)
-    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches)
-    mql.addEventListener('change', handler)
-    return () => mql.removeEventListener('change', handler)
-  }, [])
-
-  const measure = () => {
-    if (ref.current) {
-      const rect = ref.current.getBoundingClientRect()
-      const upward = window.innerHeight - rect.bottom < 320
-      setOpensUpward(upward)
-      setFixedOffset(
-        upward ? window.innerHeight - rect.top + 8 : rect.bottom + 8
-      )
-    }
-  }
-
-  useEffect(() => {
-    if (!isOpen) return
-    measure()
-    window.addEventListener('resize', measure)
-    window.addEventListener('orientationchange', measure)
-    window.addEventListener('scroll', measure, true)
-    return () => {
-      window.removeEventListener('resize', measure)
-      window.removeEventListener('orientationchange', measure)
-      window.removeEventListener('scroll', measure, true)
-    }
-  }, [isOpen])
+  const { opensUpward, fixedOffset, measure } = usePopupPlacement(
+    ref,
+    isOpen,
+    320,
+    { watchOrientation: true }
+  )
 
   if (!hasOtherApps) return null
 

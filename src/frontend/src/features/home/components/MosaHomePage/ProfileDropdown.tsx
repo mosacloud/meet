@@ -2,20 +2,23 @@ import { CSSProperties, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useUser } from '@/features/auth/api/useUser'
 import { logout } from '@/features/auth/utils/logout'
+import { useDismissablePopup } from '@/hooks/useDismissablePopup'
+import { useMobileBreakpoint } from '@/hooks/useMobileBreakpoint'
+import { usePopupPlacement } from '@/hooks/usePopupPlacement'
+import {
+  SURFACE,
+  HOVER,
+  BORDER,
+  INK,
+  GRAPHITE,
+  EASE,
+  SHADOW,
+  MOBILE_BREAKPOINT_QUERY,
+} from '@/utils/mosaPopupTokens'
 
-/* ── Design tokens — matches AppSwitcherButton ─────────────── */
-const SURFACE = '#ffffff'
-const HOVER = '#eeeeee'
-const BORDER = '#e6eaf1'
-const INK = '#333333'
-const GRAPHITE = '#5a6577'
-const EASE = 'cubic-bezier(0.4, 0, 0.2, 1)'
-const SHADOW =
-  '0 2px 4px rgba(0,0,0,.02), 0 4px 8px rgba(0,0,0,.03), 0 8px 16px rgba(0,0,0,.04), 0 16px 32px rgba(0,0,0,.05), 0 32px 64px rgba(0,0,0,.08)'
+/* ── Design tokens local to this component ─────────────────── */
 const DANGER = '#dc2626'
 const DANGER_TINT = '#fef2f2'
-
-const MOBILE_BREAKPOINT_QUERY = '(max-width: 480px)'
 
 // ─── avatar color hash — matches @gouvfr-lasuite/ui-kit logic ────────────────
 
@@ -291,65 +294,17 @@ export const ProfileDropdown = () => {
   const { t } = useTranslation()
   const { user } = useUser()
   const [isOpen, setIsOpen] = useState(false)
-  const [opensUpward, setOpensUpward] = useState(false)
-  const [isMobile, setIsMobile] = useState(
-    () =>
-      typeof window !== 'undefined' &&
-      window.matchMedia(MOBILE_BREAKPOINT_QUERY).matches
-  )
-  const [fixedOffset, setFixedOffset] = useState(0)
+  const isMobile = useMobileBreakpoint(MOBILE_BREAKPOINT_QUERY)
   const ref = useRef<HTMLDivElement>(null)
   const triggerRef = useRef<HTMLButtonElement>(null)
 
-  useEffect(() => {
-    if (!isOpen) return
-    const handleClickOutside = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) {
-        setIsOpen(false)
-      }
-    }
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        setIsOpen(false)
-        triggerRef.current?.focus()
-      }
-    }
-    document.addEventListener('mousedown', handleClickOutside)
-    document.addEventListener('keydown', handleKeyDown)
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
-      document.removeEventListener('keydown', handleKeyDown)
-    }
-  }, [isOpen])
+  useDismissablePopup(ref, triggerRef, isOpen, setIsOpen)
 
-  useEffect(() => {
-    const mql = window.matchMedia(MOBILE_BREAKPOINT_QUERY)
-    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches)
-    mql.addEventListener('change', handler)
-    return () => mql.removeEventListener('change', handler)
-  }, [])
-
-  const measure = () => {
-    if (ref.current) {
-      const rect = ref.current.getBoundingClientRect()
-      const upward = window.innerHeight - rect.bottom < 240
-      setOpensUpward(upward)
-      setFixedOffset(
-        upward ? window.innerHeight - rect.top + 8 : rect.bottom + 8
-      )
-    }
-  }
-
-  useEffect(() => {
-    if (!isOpen) return
-    measure()
-    window.addEventListener('resize', measure)
-    window.addEventListener('scroll', measure, true)
-    return () => {
-      window.removeEventListener('resize', measure)
-      window.removeEventListener('scroll', measure, true)
-    }
-  }, [isOpen])
+  const { opensUpward, fixedOffset, measure } = usePopupPlacement(
+    ref,
+    isOpen,
+    240
+  )
 
   const handleOpen = () => {
     measure()
