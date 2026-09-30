@@ -1,7 +1,8 @@
 import { type ApiUser } from './ApiUser'
 import { fetchApi } from '@/api/fetchApi'
 
-export type ApiUserPreferences = Pick<ApiUser, 'id' | 'timezone' | 'language'>
+export type ApiUserPreferences = Pick<ApiUser, 'id' | 'timezone'> &
+  Partial<Pick<ApiUser, 'language'>>
 
 export const updateUserPreferences = async ({
   user,

@@ -1,13 +1,20 @@
 """Unit tests for the Authentication Backends."""
 
+from types import SimpleNamespace
 from unittest import mock
 
+from django.contrib.sessions.middleware import SessionMiddleware
 from django.core.exceptions import ImproperlyConfigured, SuspiciousOperation
+from django.test import RequestFactory
 
 import pytest
 
 from core import models
-from core.authentication.backends import OIDCAuthenticationBackend
+from core.authentication.backends import (
+    PICTURE_MAX_LENGTH,
+    OIDCAuthenticationBackend,
+    sanitize_picture_claim,
+)
 from core.factories import UserFactory
 from core.services import marketing
 
@@ -449,13 +456,17 @@ def test_authentication_getter_existing_user_change_fields(
 
     monkeypatch.setattr(OIDCAuthenticationBackend, "get_userinfo", get_userinfo_mocked)
 
+    old_updated_at = user.updated_at
+
     # One and only one additional update query when a field has changed
     # Note: .save() triggers uniqueness validation queries for unique fields,
     # adding extra SELECT queries before the UPDATE:
     #   - unique=True on 'sub'
     #   - unique=True on 'admin_email'
     #   - partial unique index 'unique_email_when_sub_is_null'
-    with django_assert_num_queries(5):
+    # Plus one more UPDATE for the explicit `updated_at` bump (see
+    # `update_user_if_needed`'s docstring).
+    with django_assert_num_queries(6):
         authenticated_user = klass.get_or_create_user(
             access_token="test-token", id_token=None, payload=None
         )
@@ -465,6 +476,7 @@ def test_authentication_getter_existing_user_change_fields(
     assert user.email == email
     assert user.full_name == f"{given_name:s} {usual_name:s}"
     assert user.short_name == given_name
+    assert user.updated_at > old_updated_at
 
 
 @pytest.mark.parametrize(
@@ -496,6 +508,82 @@ def test_compute_full_name_no_fields(settings):
     settings.OIDC_USERINFO_FULLNAME_FIELDS = []
     klass = OIDCAuthenticationBackend()
     assert klass.compute_full_name({"given_name": "John"}) is None
+
+
+@pytest.mark.parametrize(
+    "user_info, expected_language",
+    [
+        ({"locale": "nl"}, "nl-nl"),
+        ({"locale": "nl-NL"}, "nl-nl"),
+        ({"locale": "FR-fr"}, "fr-fr"),
+        # "en" doesn't double up like the others: the supported code is "en-us".
+        ({"locale": "en"}, "en-us"),
+        ({"locale": "pt-BR"}, None),  # unsupported language
+        ({"locale": ""}, None),
+        ({"locale": ["nl"]}, None),  # non-string claim
+        ({}, None),
+    ],
+)
+def test_compute_language(user_info, expected_language):
+    """Test language resolution from the OIDC "locale" claim."""
+    klass = OIDCAuthenticationBackend()
+    assert klass.compute_language(user_info) == expected_language
+
+
+def test_get_extra_claims_includes_language_when_supported():
+    """The "language" extra claim is only present for a supported locale."""
+    klass = OIDCAuthenticationBackend()
+    assert (
+        klass.get_extra_claims({"locale": "nl", "given_name": "John"})["language"]
+        == "nl-nl"
+    )
+    assert "language" not in klass.get_extra_claims({"locale": "xx"})
+    assert "language" not in klass.get_extra_claims({})
+
+
+def test_compute_language_confirms_supported_english_locale():
+    """A confirmed "en"/"en-us" locale must be recorded as IdP-confirmed in the session."""
+    klass = OIDCAuthenticationBackend()
+    klass.request = SimpleNamespace(session={})
+
+    language = klass.compute_language({"locale": "en"})
+
+    assert language == "en-us"
+    assert (
+        klass.request.session[OIDCAuthenticationBackend.LANGUAGE_CONFIRMED_SESSION_KEY]
+        is True
+    )
+
+
+@pytest.mark.parametrize(
+    "user_info",
+    [
+        {},  # no locale claim at all
+        {"locale": "pt-BR"},  # unsupported locale
+        {"locale": ["nl"]},  # rejected, non-string locale
+    ],
+)
+def test_compute_language_clears_confirmation_for_absent_or_rejected_locale(
+    user_info,
+):
+    """A previously confirmed session locale must clear to False on a missing/rejected claim."""
+    klass = OIDCAuthenticationBackend()
+    klass.request = SimpleNamespace(
+        session={OIDCAuthenticationBackend.LANGUAGE_CONFIRMED_SESSION_KEY: True}
+    )
+
+    klass.compute_language(user_info)
+
+    assert (
+        klass.request.session[OIDCAuthenticationBackend.LANGUAGE_CONFIRMED_SESSION_KEY]
+        is False
+    )
+
+
+def test_compute_language_skips_session_write_without_request():
+    """No request (e.g. calling compute_language directly) must not raise."""
+    klass = OIDCAuthenticationBackend()
+    assert klass.compute_language({"locale": "nl"}) == "nl-nl"
 
 
 @pytest.mark.parametrize(
@@ -659,3 +747,259 @@ def test_marketing_signup_handles_contact_creation_errors(
 
     # Should not raise any exception
     OIDCAuthenticationBackend.signup_to_marketing_email("test@example.com")
+
+
+def test_get_extra_claims_picks_up_picture():
+    """get_extra_claims should expose a valid "picture" claim from user_info."""
+    klass = OIDCAuthenticationBackend()
+    user_info = {
+        "given_name": "Foo",
+        "usual_name": "Bar",
+        "picture": "https://example.com/avatar.jpg",
+    }
+
+    assert (
+        klass.get_extra_claims(user_info)["picture"] == "https://example.com/avatar.jpg"
+    )
+
+
+@pytest.mark.parametrize(
+    "picture",
+    [
+        None,
+        123,
+        ["https://example.com/avatar.jpg"],
+        "not-a-url",
+        "https://" + "a" * 500 + ".com",
+        "ftp://example.com/avatar.jpg",
+    ],
+)
+def test_sanitize_picture_claim_rejects_invalid_values(picture):
+    """
+    An invalid "picture" claim (wrong type, malformed URL, non-http(s) scheme,
+    or too long for the User.picture field) should be dropped rather than
+    raised, so that a broken claim can't crash the login with a
+    ValidationError from User.full_clean().
+    """
+    assert sanitize_picture_claim(picture) is None
+
+
+def test_sanitize_picture_claim_accepts_valid_url():
+    """A well-formed, appropriately-sized URL claim should be returned as-is."""
+    url = "https://example.com/avatar.jpg"
+    assert sanitize_picture_claim(url) == url
+
+
+def test_sanitize_picture_claim_accepts_url_at_exact_max_length():
+    """A URL exactly at PICTURE_MAX_LENGTH should be accepted, not rejected off-by-one."""
+    base = "https://example.com/"
+    url = base + "a" * (PICTURE_MAX_LENGTH - len(base))
+    assert len(url) == PICTURE_MAX_LENGTH
+    assert sanitize_picture_claim(url) == url
+
+
+def test_update_user_if_needed_clears_stale_picture(django_assert_num_queries):
+    """A previously stored picture should be cleared once the IdP stops sending it."""
+    user = UserFactory(picture="https://example.com/old-pic.png")
+    klass = OIDCAuthenticationBackend()
+    old_updated_at = user.updated_at
+
+    # save() -> full_clean() -> validate_unique() on the unique `sub` field adds
+    # a SELECT + savepoint on top of the UPDATE itself, plus the SAVEPOINT/RELEASE
+    # pair from the `transaction.atomic()` wrapping this clear-and-save.
+    with django_assert_num_queries(6):  # clear picture
+        klass.update_user_if_needed(user, {"email": user.email, "picture": None})
+
+    user.refresh_from_db()
+    assert user.picture is None
+    assert user.updated_at > old_updated_at
+
+
+def test_update_user_if_needed_skips_updated_at_bump_for_blocked_immutable_sub(
+    django_assert_num_queries,
+):
+    """
+    An attempted change to the immutable `sub` field is blocked (and logged)
+    by the base class, not actually applied — `claim_changed` must exclude
+    it too, otherwise `updated_at` gets a spurious bump for a user row the
+    base class didn't touch.
+    """
+    user = UserFactory(sub="original-sub")
+    klass = OIDCAuthenticationBackend()
+
+    with django_assert_num_queries(0):
+        klass.update_user_if_needed(user, {"sub": "attempted-new-sub"})
+
+    user.refresh_from_db()
+    assert user.sub == "original-sub"
+
+
+def test_update_user_if_needed_keeps_picture_when_unchanged(django_assert_num_queries):
+    """No extra query should be issued when the picture claim hasn't changed."""
+    picture = "https://example.com/pic.png"
+    user = UserFactory(picture=picture)
+    klass = OIDCAuthenticationBackend()
+
+    with django_assert_num_queries(0):
+        klass.update_user_if_needed(user, {"email": user.email, "picture": picture})
+
+    user.refresh_from_db()
+    assert user.picture == picture
+
+
+def test_update_user_if_needed_noop_when_claim_and_field_already_none(
+    django_assert_num_queries,
+):
+    """No query (and no transaction) when a None claim matches an already-empty field."""
+    user = UserFactory(picture=None)
+    klass = OIDCAuthenticationBackend()
+
+    with django_assert_num_queries(0):
+        klass.update_user_if_needed(user, {"email": user.email, "picture": None})
+
+    user.refresh_from_db()
+    assert user.picture is None
+
+
+def test_update_user_if_needed_updates_picture_to_new_value():
+    """
+    A picture claim that changes to a new, different value should be applied
+    through the base class's regular set-and-save path (not the stale-clearing
+    override, which only handles the claim going from a value to None).
+    """
+    user = UserFactory(picture="https://example.com/old.png")
+    klass = OIDCAuthenticationBackend()
+
+    klass.update_user_if_needed(
+        user, {"email": user.email, "picture": "https://example.com/new.png"}
+    )
+
+    user.refresh_from_db()
+    assert user.picture == "https://example.com/new.png"
+
+
+def test_get_or_create_user_persists_locale_and_picture_for_new_user(monkeypatch):
+    """
+    A full login for a brand-new user with "locale" and "picture" claims in
+    user_info should end up with both applied to the persisted User, exercising
+    the real get_extra_claims -> create_user path rather than calling
+    compute_language/sanitize_picture_claim/update_user_if_needed in isolation.
+    """
+    klass = OIDCAuthenticationBackend()
+
+    def get_userinfo_mocked(*args):
+        return {
+            "sub": "new-user-sub",
+            "email": "new.user@example.com",
+            "locale": "nl-NL",
+            "picture": "https://example.com/avatar.jpg",
+        }
+
+    monkeypatch.setattr(OIDCAuthenticationBackend, "get_userinfo", get_userinfo_mocked)
+
+    user = klass.get_or_create_user(
+        access_token="test-token", id_token=None, payload=None
+    )
+
+    assert user.language == "nl-nl"
+    assert user.picture == "https://example.com/avatar.jpg"
+
+
+def test_get_or_create_user_persists_locale_and_picture_for_existing_user(
+    monkeypatch,
+):
+    """Same as above, but for a returning user going through the update path."""
+    db_user = UserFactory(sub="existing-user-sub", language="en-us", picture=None)
+    klass = OIDCAuthenticationBackend()
+
+    def get_userinfo_mocked(*args):
+        return {
+            "sub": db_user.sub,
+            "email": db_user.email,
+            "locale": "de",
+            "picture": "https://example.com/new-avatar.jpg",
+        }
+
+    monkeypatch.setattr(OIDCAuthenticationBackend, "get_userinfo", get_userinfo_mocked)
+
+    user = klass.get_or_create_user(
+        access_token="test-token", id_token=None, payload=None
+    )
+
+    assert user == db_user
+    user.refresh_from_db()
+    assert user.language == "de-de"
+    assert user.picture == "https://example.com/new-avatar.jpg"
+
+
+def _real_request_with_session():
+    """A real Django session, as opposed to the `SimpleNamespace` stand-in used above."""
+    request = RequestFactory().get("/")
+    SessionMiddleware(lambda r: None).process_request(request)
+    request.session.save()
+    return request
+
+
+def test_get_or_create_user_confirms_language_in_session_on_real_path(monkeypatch):
+    """Exercises the session side-effect through the real `get_or_create_user` path."""
+    klass = OIDCAuthenticationBackend()
+    klass.request = _real_request_with_session()
+
+    def get_userinfo_mocked(*args):
+        return {"sub": "real-path-sub", "email": "new@example.com", "locale": "en"}
+
+    monkeypatch.setattr(OIDCAuthenticationBackend, "get_userinfo", get_userinfo_mocked)
+
+    klass.get_or_create_user(access_token="test-token", id_token=None, payload=None)
+
+    assert (
+        klass.request.session[OIDCAuthenticationBackend.LANGUAGE_CONFIRMED_SESSION_KEY]
+        is True
+    )
+
+
+def test_get_or_create_user_clears_session_confirmation_on_real_path(monkeypatch):
+    """A confirmed session flips back to False on a later login with a missing/rejected claim."""
+    db_user = UserFactory(sub="real-path-existing-sub", language="nl-nl")
+    klass = OIDCAuthenticationBackend()
+    klass.request = _real_request_with_session()
+    klass.request.session[OIDCAuthenticationBackend.LANGUAGE_CONFIRMED_SESSION_KEY] = (
+        True
+    )
+
+    def get_userinfo_mocked(*args):
+        return {"sub": db_user.sub, "email": db_user.email}  # no "locale" claim
+
+    monkeypatch.setattr(OIDCAuthenticationBackend, "get_userinfo", get_userinfo_mocked)
+
+    klass.get_or_create_user(access_token="test-token", id_token=None, payload=None)
+
+    assert (
+        klass.request.session[OIDCAuthenticationBackend.LANGUAGE_CONFIRMED_SESSION_KEY]
+        is False
+    )
+
+
+def test_get_or_create_user_clears_stale_picture_for_existing_user(monkeypatch):
+    """
+    A returning user whose IdP stops sending a "picture" claim should have it
+    cleared, exercising the real get_extra_claims -> update_user_if_needed path
+    (not calling update_user_if_needed directly with a hand-built claims dict).
+    """
+    db_user = UserFactory(
+        sub="existing-user-sub", picture="https://example.com/old-avatar.jpg"
+    )
+    klass = OIDCAuthenticationBackend()
+
+    def get_userinfo_mocked(*args):
+        return {"sub": db_user.sub, "email": db_user.email}
+
+    monkeypatch.setattr(OIDCAuthenticationBackend, "get_userinfo", get_userinfo_mocked)
+
+    user = klass.get_or_create_user(
+        access_token="test-token", id_token=None, payload=None
+    )
+
+    assert user == db_user
+    user.refresh_from_db()
+    assert user.picture is None
