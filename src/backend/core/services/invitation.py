@@ -9,6 +9,8 @@ from django.template.loader import render_to_string
 from django.utils.translation import get_language, override
 from django.utils.translation import gettext_lazy as _
 
+from core.utils import build_shareable_room_url
+
 logger = getLogger(__name__)
 
 
@@ -31,8 +33,10 @@ class InvitationService:
             "brandname": settings.EMAIL_BRAND_NAME,
             "logo_img": settings.EMAIL_LOGO_IMG,
             "domain": settings.EMAIL_DOMAIN,
-            "room_url": f"{settings.EMAIL_APP_BASE_URL}/{room.slug}",
-            "room_link": f"{settings.EMAIL_DOMAIN}/{room.slug}",
+            "room_url": build_shareable_room_url(
+                settings.EMAIL_APP_BASE_URL, room.slug
+            ),
+            "room_link": build_shareable_room_url(settings.EMAIL_DOMAIN, room.slug),
             "sender_email": sender.email,
         }
 

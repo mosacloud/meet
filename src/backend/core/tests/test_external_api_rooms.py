@@ -499,7 +499,7 @@ def test_api_rooms_retrieve_success(settings):
         "slug": room.slug,
         "access_level": str(room.access_level),
         "configuration": room.configuration,
-        "url": f"http://your-application.com/{room.slug}",
+        "url": f"http://your-application.com/{room.slug}?silentLogin=false",
         "telephony": {
             "enabled": True,
             "phone_number": "+1-555-0100",
@@ -1011,7 +1011,10 @@ def test_api_rooms_update_owner_success(mock_update_metadata, settings):
     assert response.data["id"] == str(room.id)
     assert response.data["access_level"] == RoomAccessLevel.RESTRICTED
     assert response.data["configuration"] == {"everyone_can_mute": True}
-    assert response.data["url"] == f"http://your-application.com/{room.slug}"
+    assert (
+        response.data["url"]
+        == f"http://your-application.com/{room.slug}?silentLogin=false"
+    )
 
     room.refresh_from_db()
     assert room.access_level == RoomAccessLevel.RESTRICTED

@@ -317,6 +317,17 @@ def generate_room_slug():
     return "-".join(parts)
 
 
+def build_shareable_room_url(base_url: str, slug: str) -> str:
+    """Build a room URL meant to be handed to people outside the app
+    (invitation emails, external API consumers).
+
+    Disables silent OIDC login on load: recipients without an account
+    should never be bounced through the IdP just to reach the join screen.
+    Mirrors the frontend's getShareableRoomUrl.
+    """
+    return f"{base_url}/{slug}?silentLogin=false"
+
+
 def detect_mimetype(file_buffer: bytes, filename: str | None = None) -> str:
     """
     Detect MIME type using multiple methods for better accuracy.
