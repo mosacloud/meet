@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useEffect, useMemo, useState } from 'react'
 import { formatPinCode } from '@/features/rooms/utils/telephony'
 import type { ApiRoom } from '@/features/rooms/api/ApiRoom'
-import { getRouteUrl } from '@/navigation/getRouteUrl'
+import { getShareableRoomUrl } from '@/navigation/getShareableRoomUrl'
 import { reportError } from '@/features/analytics/telemetry'
 
 const COPY_SUCCESS_TIMEOUT = 3000
@@ -34,7 +34,7 @@ export const useCopyRoomToClipboard = (room: ApiRoom | undefined) => {
 
   const roomSlug = room?.slug
   const roomUrl = useMemo(() => {
-    return roomSlug ? getRouteUrl('room', roomSlug) : ''
+    return roomSlug ? getShareableRoomUrl(roomSlug) : ''
   }, [roomSlug])
 
   const hasTelephonyInfo = useMemo(() => {
