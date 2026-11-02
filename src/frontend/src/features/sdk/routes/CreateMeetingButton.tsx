@@ -9,7 +9,7 @@ import { Text } from '@/primitives'
 import { Spinner } from '@/primitives/Spinner'
 import { buttonRecipe } from '@/primitives/buttonRecipe'
 import { CameraIcon } from '@/assets/CameraIcon'
-import { getRouteUrl } from '@/navigation/getRouteUrl'
+import { getShareableRoomUrl } from '@/navigation/getShareableRoomUrl'
 import { useRoomCreationCallback } from '../api/useRoomCreationCallback'
 import { PopupManager } from '../utils/PopupManager'
 import { CallbackCreationRoomData } from '../utils/types'
@@ -45,7 +45,7 @@ const CreateMeetingButton = () => {
   const { data } = useRoomCreationCallback({ callbackId })
 
   const roomUrl = useMemo(() => {
-    if (room?.slug) return getRouteUrl('room', room.slug)
+    if (room?.slug) return getShareableRoomUrl(room.slug)
   }, [room])
 
   const backgroundColor = useMemo(() => {
@@ -84,8 +84,8 @@ const CreateMeetingButton = () => {
     setIsPending(false)
     popupManager.sendRoomData({
       room: {
-        url: getRouteUrl('room', data.room.slug),
         ...data.room,
+        url: getShareableRoomUrl(data.room.slug),
       },
     })
   }, [data])

@@ -2,8 +2,10 @@ import { useQuery } from '@tanstack/react-query'
 import { keys } from '@/api/queryKeys'
 import { fetchUser } from './fetchUser'
 import { type ApiUser } from './ApiUser'
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
+import { useLocation } from 'wouter'
 import { useConfig } from '@/api/useConfig'
+import { hasLoggedInBefore, markLoggedIn } from '../utils/hasLoggedInBefore'
 
 const SILENT_LOGIN_PARAM = 'silentLogin'
 
@@ -13,6 +15,17 @@ const isSilentLoginDisabledByUrl = () => {
     SILENT_LOGIN_PARAM
   )
   return value === 'false'
+}
+
+/**
+ * The homepage's join-by-code input lets anyone join a meeting without an
+ * account. A browser that has never logged in there is treated as a guest,
+ * and silent login is skipped so it isn't bounced through the IdP's login
+ * prompt before it ever sees that input (see the "open meet-links ask for
+ * login" ticket).
+ */
+const isGuestEntryPointGated = (pathname: string) => {
+  return pathname === '/' && !hasLoggedInBefore()
 }
 
 /**
@@ -26,14 +39,21 @@ export const useUser = (
   } = {}
 ) => {
   const { data, isLoading: isConfigLoading } = useConfig()
+  const [pathname] = useLocation()
 
   const disabledByUrl = useMemo(() => isSilentLoginDisabledByUrl(), [])
+  const guestEntryPointGated = useMemo(
+    () => isGuestEntryPointGated(pathname),
+    [pathname]
+  )
 
   const options = useMemo(() => {
     if (isConfigLoading) return
 
     const silentDisabled =
-      data?.is_silent_login_enabled !== true || disabledByUrl
+      data?.is_silent_login_enabled !== true ||
+      disabledByUrl ||
+      guestEntryPointGated
 
     if (silentDisabled) {
       return {
@@ -42,7 +62,7 @@ export const useUser = (
       }
     }
     return opts.fetchUserOptions
-  }, [data, opts, isConfigLoading, disabledByUrl])
+  }, [data, opts, isConfigLoading, disabledByUrl, guestEntryPointGated])
 
   const query = useQuery({
     queryKey: [keys.user],
@@ -54,6 +74,10 @@ export const useUser = (
   const isLoggedIn =
     query.status === 'success' ? query.data !== false : undefined
   const isLoggedOut = isLoggedIn === false
+
+  useEffect(() => {
+    if (isLoggedIn) markLoggedIn()
+  }, [isLoggedIn])
 
   return {
     refetch: query.refetch,
