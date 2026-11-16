@@ -1,10 +1,17 @@
 import { useMemo } from 'react'
-import { RecordingLanguage, recordingStore } from '@/stores/recording'
+import {
+  RecordingLanguage,
+  recordingLanguageForUiLanguage,
+  recordingStore,
+} from '@/stores/recording'
 import { useTranslation } from 'react-i18next'
 import { useSnapshot } from 'valtio'
 
 export const useTranscriptionLanguage = () => {
-  const { t } = useTranslation('settings', { keyPrefix: 'transcription' })
+  const { t, i18n } = useTranslation('settings', {
+    keyPrefix: 'transcription',
+  })
+  const uiLanguage = i18n.resolvedLanguage ?? i18n.language
 
   const recordingSnap = useSnapshot(recordingStore)
 
@@ -43,14 +50,15 @@ export const useTranscriptionLanguage = () => {
   }, [languages])
 
   const { selectedLanguageKey, selectedLanguageLabel } = useMemo(() => {
+    const selectedLanguageKey =
+      recordingSnap.language ?? recordingLanguageForUiLanguage(uiLanguage)
+
     const selectedLanguageLabel = languages.find(
-      (option) => option.key === recordingSnap.language
+      (option) => option.key === selectedLanguageKey
     )?.label
 
-    const selectedLanguageKey = recordingSnap.language
-
     return { selectedLanguageKey, selectedLanguageLabel }
-  }, [recordingSnap.language, languages])
+  }, [recordingSnap.language, uiLanguage, languages])
 
   return {
     languageOptions,
