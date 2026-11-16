@@ -8,12 +8,22 @@ export enum RecordingLanguage {
   AUTOMATIC = 'auto',
 }
 
+export const recordingLanguageForUiLanguage = (
+  uiLanguage?: string
+): RecordingLanguage => {
+  const code = (uiLanguage ?? '').split('-')[0].toLowerCase()
+  const match = Object.values(RecordingLanguage).find(
+    (language) => language === code && language !== RecordingLanguage.AUTOMATIC
+  )
+  return match ?? RecordingLanguage.AUTOMATIC
+}
+
 type State = {
-  language: RecordingLanguage
+  language: RecordingLanguage | null
   isErrorDialogOpen: string
 }
 
 export const recordingStore = proxy<State>({
-  language: RecordingLanguage.FRENCH,
+  language: null,
   isErrorDialogOpen: '',
 })
