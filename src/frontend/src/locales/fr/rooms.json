@@ -485,9 +485,9 @@
     "body": "Transcrivez jusqu'à {{max_duration}} de réunion.",
     "bodyWithoutMaxDuration": "Transcrivez votre réunion sans limite.",
     "details": {
-      "receiver": "La transcription sera envoyée à l'organisateur et aux coorganisateurs.",
+      "receiver": "La transcription sera envoyée à l'organisateur.",
       "destination": "Un nouveau document sera créé sur",
-      "destinationUnknown": "Un nouveau document sera créé",
+      "destinationUnknown": "Un nouveau document sera créé dans les Docs de l'organisateur",
       "language": "Langue de la réunion :",
       "recording": "Démarrer aussi un enregistrement vidéo"
     },
@@ -557,7 +557,7 @@
     "linkAriaLabel": "Ouvrir la documentation sur l'enregistrement - ouvre dans une nouvelle fenêtre",
     "details": {
       "receiver": "L'enregistrement sera envoyé à l'organisateur et aux coorganisateurs.",
-      "destination": "Cet enregistrement sera conservé temporairement sur nos serveurs",
+      "destination": "Cet enregistrement sera conservé dans le stockage de votre organisation",
       "loading": "Démarrage de l'enregistrement",
       "linkMore": "En savoir plus",
       "transcription": "Transcrire cet enregistrement",
