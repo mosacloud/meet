@@ -485,9 +485,9 @@
     "body": "Transkribiere bis zu {{max_duration}} Meetingdauer.",
     "bodyWithoutMaxDuration": "Transkribieren dein Meeting ohne Zeitbegrenzung.",
     "details": {
-      "receiver": "Das Transkript wird an den Host und die Co-Hosts gesendet.",
+      "receiver": "Das Transkript wird an den Host gesendet.",
       "destination": "Ein neues Dokument wird erstellt auf",
-      "destinationUnknown": "Ein neues Dokument wird erstellt",
+      "destinationUnknown": "Ein neues Dokument wird in den Docs des Hosts erstellt",
       "language": "Meeting-Sprache:",
       "recording": "Auch eine Videoaufzeichnung starten"
     },
@@ -557,7 +557,7 @@
     "linkAriaLabel": "Dokumentation zur Aufzeichnung öffnen – öffnet in neuem Tab",
     "details": {
       "receiver": "Die Aufzeichnung wird an den Host und die Co-Hosts gesendet.",
-      "destination": "Diese Aufzeichnung wird vorübergehend auf unseren Servern gespeichert",
+      "destination": "Diese Aufzeichnung wird im eigenen Speicher deiner Organisation gespeichert",
       "loading": "Aufzeichnung wird gestartet",
       "linkMore": "Mehr erfahren",
       "transcription": "Diese Aufzeichnung transkribieren",
