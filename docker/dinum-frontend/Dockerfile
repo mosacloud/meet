@@ -58,7 +58,7 @@ RUN npx webpack --mode production
 
 
 # ---- Front-end image ----
-FROM nginxinc/nginx-unprivileged:1.30.6-alpine3.24 AS frontend-production
+FROM nginx/nginx-unprivileged:1.30.7-alpine3.24 AS frontend-production
 
 USER root
 RUN apk upgrade --no-cache libexpat && \
