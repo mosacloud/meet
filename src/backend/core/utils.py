@@ -16,7 +16,7 @@ import string
 from datetime import timedelta
 from functools import lru_cache
 from typing import List, Optional
-from uuid import uuid4
+from uuid import UUID, uuid4
 
 from django.conf import settings
 from django.core.files.storage import default_storage
