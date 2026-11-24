@@ -4,7 +4,7 @@ import { VStack } from '@/styled-system/jsx'
 import { css } from '@/styled-system/css'
 import { RiCheckLine, RiFileCopyLine } from '@remixicon/react'
 import { Bold, Button, Div, Text } from '@/primitives'
-import { getRouteUrl } from '@/navigation/getRouteUrl'
+import { getShareableRoomUrl } from '@/navigation/getShareableRoomUrl'
 import { useRoomData } from '../hooks/useRoomData'
 import { formatPinCode } from '../../utils/telephony'
 import { useTelephony } from '../hooks/useTelephony'
@@ -14,7 +14,7 @@ export const Info = () => {
   const { t } = useTranslation('rooms', { keyPrefix: 'info' })
 
   const data = useRoomData()
-  const roomUrl = data?.slug ? getRouteUrl('room', data.slug) : ''
+  const roomUrl = data?.slug ? getShareableRoomUrl(data.slug) : ''
 
   const telephony = useTelephony()
 

@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { getRouteUrl } from '@/navigation/getRouteUrl'
+import { getShareableRoomUrl } from '@/navigation/getShareableRoomUrl'
 import { Bold, Button, Dialog, type DialogProps, P, Text } from '@/primitives'
 import { HStack } from '@/styled-system/jsx'
 import { RiCheckLine, RiFileCopyLine, RiSpam2Fill } from '@remixicon/react'
@@ -17,7 +17,7 @@ export const LaterMeetingDialog = ({
 }: { room: null | ApiRoom } & Omit<DialogProps, 'title'>) => {
   const { t } = useTranslation('home', { keyPrefix: 'laterMeetingDialog' })
 
-  const roomUrl = room && getRouteUrl('room', room?.slug)
+  const roomUrl = room && getShareableRoomUrl(room.slug)
   const telephony = useTelephony()
 
   const [isHovered, setIsHovered] = useState(false)

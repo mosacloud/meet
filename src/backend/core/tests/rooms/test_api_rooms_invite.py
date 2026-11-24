@@ -286,8 +286,8 @@ def test_api_rooms_invite_success(mock_email_class, settings):
     required_content = [
         "ACME",
         "https://acme.com/logo",
-        f"https://acme.com/{room.slug}",
-        f"acme.com/{room.slug}",
+        f"https://acme.com/{room.slug}?silentLogin=false",
+        f"acme.com/{room.slug}?silentLogin=false",
     ]
     for content in required_content:
         assert content in plain_body

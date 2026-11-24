@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { getRouteUrl } from '@/navigation/getRouteUrl'
+import { getShareableRoomUrl } from '@/navigation/getShareableRoomUrl'
 import { Div, Button, P, Bold } from '@/primitives'
 import { HStack, styled, VStack } from '@/styled-system/jsx'
 import { Heading, Dialog } from 'react-aria-components'
@@ -49,7 +49,7 @@ export const InviteDialog = ({ mode }: { mode: 'join' | 'create' }) => {
   const [isDismissed, setIsDismissed] = useState(false)
   const showInviteDialog =
     !isDismissed && (mode === 'create' || isCreatingUnregisteredRoom)
-  const roomUrl = roomData?.slug ? getRouteUrl('room', roomData.slug) : ''
+  const roomUrl = roomData?.slug ? getShareableRoomUrl(roomData.slug) : ''
 
   const telephony = useTelephony()
 
