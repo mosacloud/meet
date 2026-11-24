@@ -3,10 +3,11 @@ Test users API endpoints in the Meet core app.
 """
 
 import pytest
-from rest_framework.test import APIClient
+from rest_framework.test import APIClient, APIRequestFactory
 
 from core import factories, models
 from core.api import serializers
+from core.authentication.backends import OIDCAuthenticationBackend
 
 pytestmark = pytest.mark.django_db
 
@@ -125,9 +126,79 @@ def test_api_users_retrieve_me_authenticated(settings):
         "email": user.email,
         "full_name": user.full_name,
         "short_name": user.short_name,
+        "picture": user.picture,
         "language": user.language,
+        # force_login never sets the session flag, so this is None ("unknown"), not False.
+        "language_confirmed_by_idp": None,
         "timezone": "UTC",
     }
+
+
+@pytest.mark.parametrize("confirmed", [True, False])
+def test_api_users_retrieve_me_reports_confirmed_language(settings, confirmed):
+    """`language_confirmed_by_idp` should reflect the session flag's actual value."""
+    settings.TIME_ZONE = "UTC"
+    user = factories.UserFactory()
+
+    client = APIClient()
+    client.force_login(user)
+    session = client.session
+    session[OIDCAuthenticationBackend.LANGUAGE_CONFIRMED_SESSION_KEY] = confirmed
+    session.save()
+
+    response = client.get("/api/v1.0/users/me/")
+
+    assert response.status_code == 200
+    assert response.json()["language_confirmed_by_idp"] is confirmed
+
+
+def test_api_users_retrieve_me_reports_confirmed_unmappable_language(settings):
+    """
+    The backend must not prevent/normalize `language_confirmed_by_idp: True`
+    paired with a `language` outside the frontend's known set — this is the
+    exact shape `useSyncUserPreferencesWithBackend.tsx`'s "confirmed but
+    unmappable" branch relies on (a future language added to
+    `settings.LANGUAGES` before the frontend's language map is updated).
+    """
+    settings.TIME_ZONE = "UTC"
+    user = factories.UserFactory()
+    # Bypass full_clean()'s `choices` validation (a plain .save() would
+    # reject a language outside settings.LANGUAGES) to simulate a future
+    # language the frontend doesn't know yet.
+    models.User.objects.filter(pk=user.pk).update(language="pt-br")
+
+    client = APIClient()
+    client.force_login(user)
+    session = client.session
+    session[OIDCAuthenticationBackend.LANGUAGE_CONFIRMED_SESSION_KEY] = True
+    session.save()
+
+    response = client.get("/api/v1.0/users/me/")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["language_confirmed_by_idp"] is True
+    assert body["language"] == "pt-br"
+
+
+def test_api_users_retrieve_me_scopes_confirmed_language_to_requester():
+    """`language_confirmed_by_idp` must not leak onto other users in the same response."""
+    requester = factories.UserFactory()
+    other_user = factories.UserFactory()
+
+    client = APIClient()
+    client.force_login(requester)
+    session = client.session
+    session[OIDCAuthenticationBackend.LANGUAGE_CONFIRMED_SESSION_KEY] = True
+    session.save()
+
+    # The serialized object, not the requester, must determine the outcome.
+    request = APIRequestFactory().get("/")
+    request.user = requester
+    request.session = session
+    serializer = serializers.UserSerializer(other_user, context={"request": request})
+
+    assert serializer.data["language_confirmed_by_idp"] is None
 
 
 def test_api_users_retrieve_anonymous():
