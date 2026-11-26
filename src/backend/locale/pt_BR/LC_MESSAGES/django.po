@@ -623,11 +623,12 @@ msgstr " A gravação expirará em %(days)s dias. "
 #: core/templates/mail/html/screen_recording.html:192
 #: core/templates/mail/text/screen_recording.txt:10
 msgid ""
-" Sharing the recording via link is not yet available. Only organizers can "
-"download it. "
+" Sharing the recording via a link is not available yet. Only the person who "
+"started the recording, the host and the co-hosts can download it. "
 msgstr ""
-" O compartilhamento da gravação por link ainda não está disponível. Apenas "
-"os organizadores podem baixá-la. "
+" O compartilhamento da gravação por link ainda não está disponível. Apenas a "
+"pessoa que iniciou a gravação, o anfitrião e os co-anfitriões podem baixá-"
+"la. "
 
 #: core/templates/mail/html/screen_recording.html:198
 #: core/templates/mail/text/screen_recording.txt:12

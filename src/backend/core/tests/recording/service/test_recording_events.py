@@ -9,7 +9,8 @@ from unittest import mock
 
 import pytest
 
-from core.factories import RecordingFactory
+from core.factories import RecordingFactory, UserRecordingAccessFactory
+from core.models import RoleChoices
 from core.recording.enums import RecordingWorkerEvent
 from core.recording.services.recording_events import (
     RecordingEventsError,
@@ -182,6 +183,29 @@ def test_handle_successful_saves_recording(  # pylint: disable=too-many-argument
 
     recording.refresh_from_db()
     assert recording.status == expected_status
+
+
+@mock.patch(
+    "core.recording.event.notification.send_email.delay",
+    side_effect=ConnectionRefusedError(111, "Connection refused"),
+)
+def test_handle_successful_saves_recording_when_smtp_is_unreachable(
+    mock_send_email, service
+):
+    """A recording is still saved when its mail cannot reach the SMTP server.
+
+    With Celery disabled the mail is sent synchronously, so an unreachable
+    SMTP server raises in the middle of saving the recording.
+    """
+
+    recording = RecordingFactory(status="stopped", mode="screen_recording")
+    UserRecordingAccessFactory(recording=recording, role=RoleChoices.OWNER)
+
+    service._handle_successful(recording)
+
+    mock_send_email.assert_called_once()
+    recording.refresh_from_db()
+    assert recording.status == "saved"
 
 
 @pytest.mark.parametrize(

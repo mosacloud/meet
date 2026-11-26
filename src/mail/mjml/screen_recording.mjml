@@ -36,7 +36,7 @@
           </mj-text>
           <mj-text>
             {% blocktrans %}
-            Sharing the recording via link is not yet available. Only organizers can download it.
+            Sharing the recording via a link is not available yet. Only the person who started the recording, the host and the co-hosts can download it.
             {% endblocktrans %}
           </mj-text>
           <mj-text>

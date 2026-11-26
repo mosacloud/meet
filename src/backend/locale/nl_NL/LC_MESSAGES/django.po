@@ -632,11 +632,11 @@ msgstr " De opname verloopt over %(days)s dagen. "
 #: core/templates/mail/html/screen_recording.html:192
 #: core/templates/mail/text/screen_recording.txt:10
 msgid ""
-" Sharing the recording via link is not yet available. Only organizers can "
-"download it. "
+" Sharing the recording via a link is not available yet. Only the person who "
+"started the recording, the host and the co-hosts can download it. "
 msgstr ""
-"Het delen van de opname via een link is nog niet beschikbaar. Alleen "
-"organisatoren kunnen deze downloaden."
+"Delen via een link is nog niet mogelijk. Alleen wie de opname heeft gestart, "
+"de host en de co-hosts kunnen deze downloaden."
 
 #: core/templates/mail/html/screen_recording.html:198
 #: core/templates/mail/text/screen_recording.txt:12

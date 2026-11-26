@@ -634,11 +634,12 @@ msgstr " La grabación caducará dentro de %(days)s días. "
 #: core/templates/mail/html/screen_recording.html:192
 #: core/templates/mail/text/screen_recording.txt:10
 msgid ""
-" Sharing the recording via link is not yet available. Only organizers can "
-"download it. "
+" Sharing the recording via a link is not available yet. Only the person who "
+"started the recording, the host and the co-hosts can download it. "
 msgstr ""
 " Compartir la grabación mediante un enlace todavía no está disponible. Solo "
-"los organizadores pueden descargarla. "
+"la persona que inició la grabación, el organizador y los coorganizadores "
+"pueden descargarla. "
 
 #: core/templates/mail/html/screen_recording.html:198
 #: core/templates/mail/text/screen_recording.txt:12

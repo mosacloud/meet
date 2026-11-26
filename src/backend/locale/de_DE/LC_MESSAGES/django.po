@@ -637,11 +637,12 @@ msgstr " Die Aufzeichnung wird in %(days)s Tagen ablaufen. "
 #: core/templates/mail/html/screen_recording.html:192
 #: core/templates/mail/text/screen_recording.txt:10
 msgid ""
-" Sharing the recording via link is not yet available. Only organizers can "
-"download it. "
+" Sharing the recording via a link is not available yet. Only the person who "
+"started the recording, the host and the co-hosts can download it. "
 msgstr ""
-" Die Freigabe der Aufzeichnung per Link ist noch nicht verfügbar. Nur "
-"Organisatoren können sie herunterladen. "
+" Die Freigabe der Aufzeichnung per Link ist noch nicht verfügbar. Nur die "
+"Person, die die Aufzeichnung gestartet hat, der Host und die Co-Hosts können "
+"sie herunterladen. "
 
 #: core/templates/mail/html/screen_recording.html:198
 #: core/templates/mail/text/screen_recording.txt:12

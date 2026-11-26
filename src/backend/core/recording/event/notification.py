@@ -2,7 +2,6 @@
 
 import asyncio
 import logging
-import smtplib
 from datetime import datetime, timezone
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
@@ -114,7 +113,10 @@ class NotificationService:
                         "recording_time": local_created_at.strftime("%H:%M"),
                     },
                 )
-            except (smtplib.SMTPException, CeleryOperationalError) as exception:
+            except (OSError, CeleryOperationalError) as exception:
+                # OSError covers SMTP errors and an unreachable SMTP server:
+                # with Celery disabled the mail is sent here, and a failure
+                # must not stop the recording from being saved.
                 logger.error("notification could not be sent: %s", exception)
                 has_failures = True
 

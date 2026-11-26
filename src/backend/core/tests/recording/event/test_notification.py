@@ -250,6 +250,31 @@ def test_notify_user_by_email_smtp_exception(mocked_current_site, caplog):
         assert "notification could not be sent:" in caplog.text
 
 
+def test_notify_user_by_email_smtp_server_unreachable(mocked_current_site, caplog):
+    """An unreachable SMTP server is reported as a failure without crashing the caller.
+
+    With Celery disabled the mail is sent synchronously, and connecting to a
+    server that is down raises an OSError, not an SMTPException.
+    """
+
+    recording = factories.RecordingFactory(room__name="Conference Room A")
+    factories.UserRecordingAccessFactory(
+        recording=recording, role=models.RoleChoices.OWNER
+    )
+
+    notification_service = NotificationService()
+
+    with mock.patch(
+        "core.tasks.mail.send_mail",
+        side_effect=ConnectionRefusedError(111, "Connection refused"),
+    ) as mock_send_mail:
+        result = notification_service._notify_user_by_email(recording)
+
+        assert result is False
+        assert mock_send_mail.call_count == 1
+        assert "notification could not be sent:" in caplog.text
+
+
 def test_notify_user_by_email_queues_generic_task(settings):
     """One generic send_email task is queued per owner, with serializable args."""
     settings.RECORDING_DOWNLOAD_BASE_URL = "https://acme.com/recordings"
