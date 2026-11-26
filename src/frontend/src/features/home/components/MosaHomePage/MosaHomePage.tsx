@@ -1,12 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { useSnapshot } from 'valtio'
 import { useUser } from '@/features/auth/api/useUser'
 import { authUrl } from '@/features/auth/utils/authUrl'
 import { navigateTo } from '@/navigation/navigateTo'
 import { generateRoomId, useCreateRoom, isRoomValid } from '@/features/rooms'
-import { userStore } from '@/stores/user'
 import { LaterMeetingDialog } from '@/features/home/components/LaterMeetingDialog'
 import { ApiRoom } from '@/features/rooms/api/ApiRoom'
 import { AppSwitcherButton } from './AppSwitcherButton'
@@ -108,7 +106,6 @@ export const MosaHomePage = () => {
   }, [])
 
   const { mutateAsync: createRoom } = useCreateRoom()
-  const { username } = useSnapshot(userStore)
 
   useEffect(() => {
     document.title = t('mosa.pageTitle')
@@ -137,16 +134,16 @@ export const MosaHomePage = () => {
   const handleCreateInstant = async () => {
     setIsCreateOpen(false)
     const slug = generateRoomId()
-    const data = await createRoom({ slug, username })
+    const data = await createRoom({ slug })
     navigateTo('room', data.slug, {
-      state: { create: true, initialRoomData: data },
+      state: { create: true },
     })
   }
 
   const handleCreateLater = async () => {
     setIsCreateOpen(false)
     const slug = generateRoomId()
-    const data = await createRoom({ slug, username })
+    const data = await createRoom({ slug })
     setLaterRoom(data)
   }
 
